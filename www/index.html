@@ -37,7 +37,7 @@
               'message: ' + error.message + '\n');
     }
  
-    navigator.geolocation.getCurrentPosition(onSuccess, onError);
+    navigator.geolocation.watchPosition(onSuccess, onError);
     }, false);
 
     function onMapReady() {
