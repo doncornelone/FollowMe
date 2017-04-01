@@ -1,4 +1,6 @@
-#MainScreen {
+html,
+body,
+#map-page {
   height: 100%;
   margin: 0;
   padding: 0;
@@ -7,6 +9,6 @@
   padding: 0;
 }
 .ui-content,
-.ui-content #map_canvas {
+.ui-content #map-canvas {
   height: inherit;
 }
