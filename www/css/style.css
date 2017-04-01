@@ -9,6 +9,6 @@ body,
   padding: 0;
 }
 .ui-content,
-.ui-content #map-canvas {
+.ui-content #map_canvas {
   height: inherit;
 }
