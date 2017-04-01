@@ -1,36 +1,124 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-<meta charset="UTF-8">
-<title>Geo Location</title>
-<style type="text/css">
-html { height: 100% }
-body { height: 100%; margin: 0; padding: 0 }
-#map-canvas { height: 100% }
-</style>
-<script type="text/javascript" src="cordova.js"></script>
-<script src="http://maps.google.com/maps/api/js" type="text/javascript"></script>
-<script type="text/javascript">
-navigator.geolocation.getCurrentPosition(onSuccess, onError, { timeout: 30000 });
-function onSuccess(position) {
-var lat=position.coords.latitude;
-var lang=position.coords.longitude;
+    <!DOCTYPE html>
+    <html>
+      <head>
+        <title>NextNine customer map</title>
+       <meta name="viewport" content="initial-scale=1.0, user-scalable=no">
+    <meta charset="utf-8">
+    <META HTTP-EQUIV="Refresh" CONTENT="500">
+    <style>
+      html, body, #map-canvas {
+        height: 100%;
+        margin: 0px;
+        padding: 0px
+      }
 
-//Google Maps
-var myLatlng = new google.maps.LatLng(lat,lang);
-var mapOptions = {zoom: 4,center: myLatlng}
-var map = new google.maps.Map(document.getElementById('map-canvas'), mapOptions);
-var marker = new google.maps.Marker({position: myLatlng,map: map});
-}
-function onError(error) {
-alert('code: ' + error.code + '\n' +
-'message: ' + error.message + '\n');
-}
-google.maps.event.addDomListener(window, 'load', onSuccess);
+       .labels {
+     color: orange;
+     background-color: black;
+     font-family: "Lucida Grande", "Arial", sans-serif;
+     font-size: 10px;
+     font-weight: bold;
+     text-align: center;
+     width: 100px;     
+     border: 2px solid black;
+     white-space: nowrap;}
+    </style>
+    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+    <script src="https://jquery-xml2json-plugin.googlecode.com/svn/trunk/jquery.xml2json.js"></script>
+    <script src="https://maps.googleapis.com/maps/api/js?v=3&sensor=false"></script>
+    <script src="http://google-maps-utility-library-v3.googlecode.com/svn/tags/markerwithlabel/1.0.1/src/markerwithlabel.js"></script>
+    <script>
+      var markers = [];
+      var map = null;
+      var counter =0;
+      var counter_part =0;
 
-</script>
-</head>
-<body>
-<div id="map-canvas"></div>
-</body>
+function initialize() {
+    var chicago = new google.maps.LatLng(35.890026,-5.523652);
+    var mapOptions = {
+        zoom: 3,
+        center: chicago,
+        mapTypeId: google.maps.MapTypeId.ROADMAP 
+  }
+
+  map = new google.maps.Map(document.getElementById('map-canvas'), mapOptions);
+}
+google.maps.event.addDomListener(window, 'load', initialize);
+
+  $.get('http://nnscc.mydomain.com/gmap/Customers.xml', function(xml) {
+      var jsonObj = $.xml2json(xml);
+        $.each(jsonObj.Marker, function(){
+            var stat = this.status == "Critical" ? 'http://maps.google.com/mapfiles/ms/micons/red-dot.png' : 'http://maps.google.com/mapfiles/ms/micons/green-dot.png';
+                 var mark = {
+                        title: this.title,
+                        latitude: this.latitude,
+                        longitude: this.longitude,
+                        icon: stat
+                        }
+                markers.push(mark);
+        });
+        for(var i=0; i< markers.length; i++){
+          var lon = markers[i].longitude;
+          var lat = markers[i].latitude;
+          var image = markers[i].icon;
+          var custname = markers[i].title;
+          PlaceMarker(lat,lon, image, custname); 
+        } 
+});     
+
+function PlaceMarker(lat, lon, image, custname) {
+
+     var myLatlng = new google.maps.LatLng(lat,lon);
+     var marker = new MarkerWithLabel({
+       position: myLatlng,
+       map: map,
+       icon: image,
+       labelContent: custname,
+       labelAnchor: new google.maps.Point(22, 0),
+       labelClass: "labels", // the CSS class for the label
+       labelStyle: {opacity: 0.75}
+     });
+}
+
+function recenter ()
+{
+    var location = new google.maps.LatLng(markers[counter].latitude,markers[counter].longitude);
+    map.setCenter (location);
+    map.setZoom (9);
+}
+
+function centerback()
+{
+    var location = new google.maps.LatLng(35.890026,-5.523652);
+    map.setCenter (location);
+    map.setZoom (3);
+}
+
+window.setInterval(function(){
+  recenter();
+  if(counter==(markers.length-1))
+  {
+    counter=0;
+    counter_part=0;
+    centerback();
+  }
+  else
+  {
+    if(counter_part==5)
+    {
+        centerback();
+        counter_part=0;}
+    else
+        {
+            recenter();
+            counter++;
+            counter_part++;}
+  }
+
+}, 15000);
+    </script>
+  </head>
+  <body>
+     <div id="map-canvas"></div>
+  </body>
 </html>
