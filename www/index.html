@@ -38,6 +38,10 @@ function ScaleContentToDevice(){
     var content = $.mobile.getScreenHeight() - $(".ui-header").outerHeight() - $(".ui-footer").outerHeight() - $(".ui-content").outerHeight() + $(".ui-content").height();
     $(".ui-content").height(content);
 }
+
+$( document ).on( "mobileinit", function() {
+    $.mobile.loader.prototype.options.disabled = true;
+});
   </script>
 </head>
 <body>
