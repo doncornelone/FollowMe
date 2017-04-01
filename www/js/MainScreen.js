@@ -1,11 +1,14 @@
-function initializeMap() {
-  var myOptions = {
-    center: new google.maps.LatLng(-34.397, 150.644),
-    zoom: 8,
-    mapTypeId: google.maps.MapTypeId.ROADMAP
-  };
-  var map = new google.maps.Map(document.getElementById("map-canvas"),
-    myOptions);
-}
+var map;
+    document.addEventListener("deviceready", function() {
+      var div = document.getElementById("map_canvas");
 
-$(document).on("pagecreate", initializeMap);
+      // Initialize the map view
+      map = plugin.google.maps.Map.getMap(div);
+
+      // Wait until the map is ready status.
+      map.addEventListener(plugin.google.maps.event.MAP_READY, onMapReady);
+    }, false);
+
+    function onMapReady() {
+
+    }
