@@ -10,5 +10,10 @@ var map;
     }, false);
 
     function onMapReady() {
+      var button = document.getElementById("button");
+      button.addEventListener("click", onBtnClicked, false);
+    }
 
+    function onBtnClicked() {
+      map.showDialog();
     }
