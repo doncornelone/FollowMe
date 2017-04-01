@@ -16,4 +16,5 @@
 	<plugin name="https://github.com/szymonnn/PGGoogleMaps.git"/>
 	<plugin name="cordova-plugin-geolocation" spec="1.0.0"/>
 
+	<access origin="*"/>
 </widget>
