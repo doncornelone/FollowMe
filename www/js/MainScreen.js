@@ -11,16 +11,14 @@
  
      function onMapReady() {
        $.mobile.loadingMessage = false;
-           var onSuccess = function(position) {
-        alert('Latitude: '          + position.coords.latitude          + '\n' +
-              'Longitude: '         + position.coords.longitude         + '\n' +
-              'Altitude: '          + position.coords.altitude          + '\n' +
-              'Accuracy: '          + position.coords.accuracy          + '\n' +
-              'Altitude Accuracy: ' + position.coords.altitudeAccuracy  + '\n' +
-              'Heading: '           + position.coords.heading           + '\n' +
-              'Speed: '             + position.coords.speed             + '\n' +
-              'Timestamp: '         + position.timestamp                + '\n');
-    };
+           function onSuccess(position) {
+map.animateCamera({
+  'target': new plugin.google.maps.LatLng(position.coords.latitude, position.coords.longitude);,
+  'tilt': 60,
+  'zoom': 18,
+  'bearing': 140
+});
+    }
 
     // onError Callback receives a PositionError object
     //
@@ -29,7 +27,9 @@
               'message: ' + error.message + '\n');
     }
 
-    navigator.geolocation.getCurrentPosition(onSuccess, onError);
+    // Options: throw an error if no update is received every 30 seconds.
+    //
+    var watchID = navigator.geolocation.watchPosition(onSuccess, onError, { timeout: 30000 });
      }
  
      $(document).on( "pagecontainershow", function(){
