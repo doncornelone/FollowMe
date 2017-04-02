@@ -12,12 +12,7 @@
      function onMapReady() {
        $.mobile.loadingMessage = false;
            function onSuccess(position) {
-map.animateCamera({
-  'target': new plugin.google.maps.LatLng(position.coords.latitude, position.coords.longitude);,
-  'tilt': 60,
-  'zoom': 18,
-  'bearing': 140
-});
+            
     }
 
     // onError Callback receives a PositionError object
