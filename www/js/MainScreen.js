@@ -12,7 +12,8 @@
      function onMapReady() {
        $.mobile.loadingMessage = false;
            function onSuccess(position) {
-            
+            alert ('latitude: ' + position.coords.latitude + '\n' + 'longitude: ' + position.coords.longitude + '\n')
+
     }
 
     // onError Callback receives a PositionError object
