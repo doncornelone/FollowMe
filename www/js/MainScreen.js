@@ -13,7 +13,14 @@
        $.mobile.loadingMessage = false;
            function onSuccess(position) {
             alert ('latitude: ' + position.coords.latitude + '\n' + 'longitude: ' + position.coords.longitude + '\n')
-
+           map.moveCamera({
+  'target': new plugin.google.maps.LatLng(position.coords.latitude, position.coords.longitude),
+  'tilt': 60,
+  'zoom': 18,
+  'bearing': 140
+}, function() {
+  console.log("Camera position changed.");
+});
     }
 
     // onError Callback receives a PositionError object
