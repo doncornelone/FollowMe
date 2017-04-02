@@ -9,49 +9,15 @@
   <script src="js/jquery.mobile-1.4.5.min.js"></script>
   <link rel="stylesheet" href="css/themes/my-custom-theme.css" />
   <link rel="stylesheet" href="css/themes/jquery.mobile.icons.min.css" />
-  <script type="text/javascript" >
-    var map;
-    document.addEventListener("deviceready", function() {
-      var div = document.getElementById("map_canvas");
-
-      // Initialize the map view
-      map = plugin.google.maps.Map.getMap(div);
-
-      // Wait until the map is ready status.
-      map.addEventListener(plugin.google.maps.event.MAP_READY, onMapReady);
-    }, false);
-
-    function onMapReady() {
-      $.mobile.loadingMessage = false;
-    }
-
-    $(document).on( "pagecontainershow", function(){
-      ScaleContentToDevice();        
-    });
-
-    $(window).on("resize orientationchange", function(){
-      ScaleContentToDevice();
-    });
-
-    function ScaleContentToDevice(){
-      scroll(0, 0);
-      var content = $.mobile.getScreenHeight() - $(".ui-header").outerHeight() - $(".ui-footer").outerHeight() - $(".ui-content").outerHeight() + $(".ui-content").height();
-      $(".ui-content").height(content);
-    }
-
-    $( document ).on( "mobileinit", function() {
-      $.mobile.loader.prototype.options.disabled = true;
-    });
-
-  </script>
+  <script type="text/javascript" src="js/MainScreen.js"></script>
 </head>
 <body>
   <div data-role="page" id="map-page">
     <div data-role="header">
       <h1>Main Screen</h1>
     </div>
-    <div role="main" class="ui-content" style="background: #ff0000">
-      <div style="width:100%;height:100%; margin:-16px; padding-left:32px; padding-bottom:32px; background:#ffff00" id="map_canvas"></div>
+    <div role="main" class="ui-content">
+      <div id="map_canvas"></div>
     </div>
     <div data-role="footer">
       <h1>Page Footer</h1>

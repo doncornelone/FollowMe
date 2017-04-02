@@ -10,10 +10,23 @@ var map;
     }, false);
 
     function onMapReady() {
-      var button = document.getElementById("button");
-      button.addEventListener("click", onBtnClicked, false);
+      $.mobile.loadingMessage = false;
     }
 
-    function onBtnClicked() {
-      map.showDialog();
+    $(document).on( "pagecontainershow", function(){
+      ScaleContentToDevice();        
+    });
+
+    $(window).on("resize orientationchange", function(){
+      ScaleContentToDevice();
+    });
+
+    function ScaleContentToDevice(){
+      scroll(0, 0);
+      var content = $.mobile.getScreenHeight() - $(".ui-header").outerHeight() - $(".ui-footer").outerHeight() - $(".ui-content").outerHeight() + $(".ui-content").height();
+      $(".ui-content").height(content);
     }
+
+    $( document ).on( "mobileinit", function() {
+      $.mobile.loader.prototype.options.disabled = true;
+    });
