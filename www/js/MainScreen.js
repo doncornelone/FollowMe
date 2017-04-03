@@ -10,8 +10,22 @@
      }, false);
  
      function onMapReady() {
-      var firebaseThings = window.FirebaseDatabasePlugin.ref('things');
-      firebaseThings.child('thing1').setValue('ccc');
+  var config = {
+    apiKey: "AIzaSyD--adRZnZ2o4FeQEWZ-5QhdDumE_moJM4",
+    authDomain: "bai-app-e48cd.firebaseapp.com",
+    databaseURL: "https://bai-app-e48cd.firebaseio.com",
+    projectId: "bai-app-e48cd",
+    storageBucket: "bai-app-e48cd.appspot.com",
+    messagingSenderId: "1097771959425"
+  };
+  firebase.initializeApp(config);
+  var database = firebase.database();
+  firebase.database().ref('users/' + userId).set({
+    username: "name",
+    email: "email",
+    profile_picture : "imageUrl"
+  });
+
        $.mobile.loadingMessage = false;
            function onSuccess(position) {
             map.moveCamera({
