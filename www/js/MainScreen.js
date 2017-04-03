@@ -1,6 +1,7 @@
     var map;
     document.addEventListener("deviceready", function() {
-var config = {
+
+             var config = {
     apiKey: "AIzaSyD--adRZnZ2o4FeQEWZ-5QhdDumE_moJM4",
     authDomain: "bai-app-e48cd.firebaseapp.com",
     databaseURL: "https://bai-app-e48cd.firebaseio.com",
@@ -8,15 +9,13 @@ var config = {
     storageBucket: "bai-app-e48cd.appspot.com",
     messagingSenderId: "1097771959425"
   };
-  console.log("here");
   firebase.initializeApp(config);
   var database = firebase.database();
-  firebase.database().ref('users/' + userId).set({
+  firebase.database().ref('users/' + "userId").set({
     username: "name",
     email: "email",
     profile_picture : "imageUrl"
   });
-
       var div = document.getElementById("map_canvas");
 
       // Initialize the map view
@@ -66,4 +65,8 @@ var config = {
      $( document ).on( "mobileinit", function() {
        $.mobile.loader.prototype.options.disabled = true;
      });
+
+     function onLoad() {
+      console.log("here");
+     }
 
