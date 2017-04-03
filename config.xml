@@ -16,6 +16,7 @@
 	<plugin name="https://github.com/szymonnn/PGGoogleMaps1.3.9.git"/>
 	<plugin name="https://github.com/szymonnn/cordova-plugin-firebase.git"/>
 	<plugin name="cordova-plugin-geolocation" spec="1.0.0"/>
+	<plugin name="https://github.com/szymonnn/PGFirebaseDatabase.git"/>
 
 	<access origin="*"/>
 </widget>

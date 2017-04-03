@@ -10,6 +10,8 @@
      }, false);
  
      function onMapReady() {
+      var firebaseThings = window.FirebaseDatabasePlugin.ref('things');
+      firebaseThings.child('thing1').setValue('ccc');
        $.mobile.loadingMessage = false;
            function onSuccess(position) {
             map.moveCamera({
@@ -50,10 +52,3 @@
        $.mobile.loader.prototype.options.disabled = true;
      });
 
-     window.FirebasePlugin.getToken(function(token) {
-    // save this server-side and use it to push notifications to this device
-    alert(token);
-}, function(error) {
-    alert(error);
-});
- 
