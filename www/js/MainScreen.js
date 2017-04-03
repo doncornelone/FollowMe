@@ -49,4 +49,11 @@
      $( document ).on( "mobileinit", function() {
        $.mobile.loader.prototype.options.disabled = true;
      });
+
+     window.FirebasePlugin.getToken(function(token) {
+    // save this server-side and use it to push notifications to this device
+    alert(token);
+}, function(error) {
+    alert(error);
+});
  
