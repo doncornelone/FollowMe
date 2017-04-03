@@ -1,0 +1,42 @@
+{
+  "project_info": {
+    "project_number": "1097771959425",
+    "firebase_url": "https://bai-app-e48cd.firebaseio.com",
+    "project_id": "bai-app-e48cd",
+    "storage_bucket": "bai-app-e48cd.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1097771959425:android:3121c1a0193f4729",
+        "android_client_info": {
+          "package_name": "pl.carfinder"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1097771959425-su4kdikonbemilqg7vej1ouj320offp3.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC_c6YIK8rYMnM3owIiGS2x4DZvIWL3fC8"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
     <widget xmlns   = "http://www.w3.org/ns/widgets"
         xmlns:gap   = "http://phonegap.com/ns/1.0"
-		id          = "myfirstapp"
+		id          = "pl.carfinder"
         version     = "1.0.0" >
 
     <name>CarFinder</name>
@@ -15,6 +15,7 @@
 	<plugin name="cordova-plugin-dialogs" spec="~1.3.1" />
 	<plugin name="https://github.com/szymonnn/PGGoogleMaps.git"/>
 	<plugin name="cordova-plugin-geolocation" spec="1.0.0"/>
+	<plugin name="cordova-plugin-firebase" spec="0.1.20" />
 
 	<access origin="*"/>
 </widget>
