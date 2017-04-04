@@ -69,3 +69,6 @@
   });
      }
 
+function initMainScreen(){
+  console.log("init main screen");
+}
