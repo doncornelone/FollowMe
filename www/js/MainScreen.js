@@ -101,7 +101,7 @@ alert('You are now registered!');
     // Handle Errors here.
     var errorCode = error.code;
     var errorMessage = error.message;
-    navigator.notification.alert(errorMessage);
+    alert(errorMessage);
   })
   };
 }
