@@ -91,17 +91,19 @@ function registerUser() {
   var password = $('#register-txt-password').val();
   var passwordConfirm = $('#register-txt-password-confirm').val();
   if (password.length == 0){
-    alert('Password is too short!');
+    navigator.notification.alert('Password is too short!');
   } else if (password != passwordConfirm){
-    alert('Given passwords are different!');
+    navigator.notification.alert('Given passwords are different!');
   } else {
     firebase.auth().createUserWithEmailAndPassword(email, password).then(function(user){
-alert('You are now registered!');
+navigator.notification.alert('You are now registered!', function () {
+  $( ":mobile-pagecontainer" ).pagecontainer( "load", "#login", { showLoadMsg: false } );
+});
     },function(error) {
     // Handle Errors here.
     var errorCode = error.code;
     var errorMessage = error.message;
-    alert(errorMessage);
+    navigator.notification.alert(errorMessage);
   })
   };
 }
