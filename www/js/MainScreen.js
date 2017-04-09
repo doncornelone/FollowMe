@@ -77,22 +77,13 @@
   });
      }
 
-// $( ".selector" ).page({
-//   create: function( event, ui ) {}
-// });
-
-$( ".selector" ).on( "pagecreate", function( event, ui ) {
-    console.log("hfdjhg");
-} );
 
 // REGISTRATION
 function registerUser() {
   var email = $('#register-txt-email').val();
   var password = $('#register-txt-password').val();
   var passwordConfirm = $('#register-txt-password-confirm').val();
-  if (password.length == 0){
-    navigator.notification.alert('Password is too short!');
-  } else if (password != passwordConfirm){
+  if (password != passwordConfirm){
     navigator.notification.alert('Given passwords are different!');
   } else {
     firebase.auth().createUserWithEmailAndPassword(email, password).then(function(user){
@@ -106,4 +97,29 @@ function registerUser() {
     navigator.notification.alert(errorMessage);
   })
   };
+}
+
+// LOGIN
+function loginUser() {
+  var email = $('#login-txt-email').val();
+  var password = $('#login-txt-password').val();
+    firebase.auth().signInWithEmailAndPassword(email, password).then(function(user){
+        $.mobile.changePage("#map-page");
+    },function(error) {
+    // Handle Errors here.
+    var errorCode = error.code;
+    var errorMessage = error.message;
+    navigator.notification.alert(errorMessage);
+  });
+}
+
+function resetPassword() {
+  var auth = firebase.auth();
+  var email = $('#login-txt-email').val();
+
+auth.sendPasswordResetEmail(email).then(function() {
+    navigator.notification.alert('We sent you an email with instructions on how to reset your password.');
+}, function(error) {
+    navigator.notification.alert(error.message);
+});
 }
