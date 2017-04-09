@@ -91,22 +91,12 @@ function registerUser() {
   var password = $('#register-txt-password').val();
   var passwordConfirm = $('#register-txt-password-confirm').val();
   if (password.length == 0){
-    navigator.notification.alert('Password is too short!');
+    alert('Password is too short!');
   } else if (password != passwordConfirm){
-    navigator.notification.alert('Given passwords are different!');
+    alert('Given passwords are different!');
   } else {
     firebase.auth().createUserWithEmailAndPassword(email, password).then(function(user){
-function alertDismissed() {
-  $.mobile.pageContainer.pagecontainer("change", "#login", { options });
-}
-alertDismissed
-
-navigator.notification.alert(
-    'You are now registered!',
-    alertDismissed,
-    'Great!',
-    'Go to Login'
-);
+alert('You are now registered!');
     },function(error) {
     // Handle Errors here.
     var errorCode = error.code;
