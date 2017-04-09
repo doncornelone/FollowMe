@@ -1,4 +1,17 @@
     var map;
+
+    function onAppLoad() {
+      console.log("onAppLoad")
+          var config = {
+    apiKey: "AIzaSyD--adRZnZ2o4FeQEWZ-5QhdDumE_moJM4",
+    authDomain: "bai-app-e48cd.firebaseapp.com",
+    databaseURL: "https://bai-app-e48cd.firebaseio.com",
+    projectId: "bai-app-e48cd",
+    storageBucket: "bai-app-e48cd.appspot.com",
+    messagingSenderId: "1097771959425"
+  };
+  firebase.initializeApp(config);
+        }
     document.addEventListener("deviceready", function() {
       var div = document.getElementById("map_canvas");
 
@@ -35,6 +48,10 @@
      $(document).on( "pagecontainershow", function(){
        ScaleContentToDevice();        
      });
+
+    $(document).on( "pageshow", function( event, ui ) {
+      console.log(event.target.id);
+    });
  
      $(window).on("resize orientationchange", function(){
        ScaleContentToDevice();
@@ -52,15 +69,6 @@
 
      function onLoad() {
       console.log("here");
-                   var config = {
-    apiKey: "AIzaSyD--adRZnZ2o4FeQEWZ-5QhdDumE_moJM4",
-    authDomain: "bai-app-e48cd.firebaseapp.com",
-    databaseURL: "https://bai-app-e48cd.firebaseio.com",
-    projectId: "bai-app-e48cd",
-    storageBucket: "bai-app-e48cd.appspot.com",
-    messagingSenderId: "1097771959425"
-  };
-  firebase.initializeApp(config);
   var database = firebase.database();
   firebase.database().ref('users/' + "userId").set({
     username: "name",
@@ -69,6 +77,41 @@
   });
      }
 
-function initMainScreen(){
-  console.log("init main screen");
+// $( ".selector" ).page({
+//   create: function( event, ui ) {}
+// });
+
+$( ".selector" ).on( "pagecreate", function( event, ui ) {
+    console.log("hfdjhg");
+} );
+
+// REGISTRATION
+function registerUser() {
+  var email = $('#register-txt-email').val();
+  var password = $('#register-txt-password').val();
+  var passwordConfirm = $('#register-txt-password-confirm').val();
+  if (password.length == 0){
+    navigator.notification.alert('Password is too short!');
+  } else if (password != passwordConfirm){
+    navigator.notification.alert('Given passwords are different!');
+  } else {
+    firebase.auth().createUserWithEmailAndPassword(email, password).then(function(user){
+function alertDismissed() {
+  $.mobile.pageContainer.pagecontainer("change", "#login", { options });
+}
+alertDismissed
+
+navigator.notification.alert(
+    'You are now registered!',
+    alertDismissed,
+    'Great!',
+    'Go to Login'
+);
+    },function(error) {
+    // Handle Errors here.
+    var errorCode = error.code;
+    var errorMessage = error.message;
+    navigator.notification.alert(errorMessage);
+  })
+  };
 }
