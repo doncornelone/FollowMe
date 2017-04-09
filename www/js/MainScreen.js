@@ -96,9 +96,9 @@ function registerUser() {
     navigator.notification.alert('Given passwords are different!');
   } else {
     firebase.auth().createUserWithEmailAndPassword(email, password).then(function(user){
-navigator.notification.alert('You are now registered!', function () {
-  $( ":mobile-pagecontainer" ).pagecontainer( "load", "#login", { showLoadMsg: false } );
-});
+      navigator.notification.alert('You are now registered!', function () {
+        $.mobile.changePage("#login");
+      });
     },function(error) {
     // Handle Errors here.
     var errorCode = error.code;
