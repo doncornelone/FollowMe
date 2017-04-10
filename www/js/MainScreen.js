@@ -15,6 +15,7 @@
 //MAIN SCREEN
     var map;
     $(document).on("pageshow", "#map-page", function( event ) {
+      console.log("map-page");
          ScaleContentToDevice();        
       var div = document.getElementById("map_canvas");
 
@@ -115,7 +116,7 @@ function loginUser() {
   var email = $('#login-txt-email').val();
   var password = $('#login-txt-password').val();
   firebase.auth().signInWithEmailAndPassword(email, password).then(function(user){
-    $.mobile.changePage("#main-page");
+    $.mobile.changePage("#map-page");
   },function(error) {
     // Handle Errors here.
     var errorCode = error.code;
