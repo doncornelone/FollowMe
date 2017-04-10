@@ -69,7 +69,9 @@
 
   <!-- MAP PAGE-->
   <div data-role="page" id="map-page">
-  <div data-role="panel" id="pushPanel" data-display="overlay"> 
+    <div data-role="header">
+    <a href="#pushPanel" class="ui-btn-left ui-btn ui-btn-inline ui-mini ui-corner-all ui-btn-icon-left ui-icon-bars">
+      <div data-role="panel" id="pushPanel" data-display="overlay"> 
       <ul data-role="listview" data-inset="true">
         <li><a href="#map-page" onclick="onMenuClick('map')" data-rel="close"><img class="ui-li-icon">Map</a></li>
         <li><a href="#map-page" onclick="onMenuClick('share')" data-rel="close"><img class="ui-li-icon">Share location</a></li>
@@ -79,8 +81,6 @@
         <li><a href="#map-page" onclick="onMenuClick('settings')" data-rel="close"><img class="ui-li-icon">Settings</a></li>
       </ul>
     </div> 
-    <div data-role="header">
-    <a href="#pushPanel" class="ui-btn-left ui-btn ui-btn-inline ui-mini ui-corner-all ui-btn-icon-left ui-icon-bars">
       <h1>Main Screen</h1>
     </div>
     <div role="main" class="ui-content" id="map-ui-content">
