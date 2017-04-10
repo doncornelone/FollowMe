@@ -42,6 +42,29 @@
     var watchID = navigator.geolocation.watchPosition(onSuccess, onError, { timeout: 30000 });
   }
 
+  function onMenuClick(name) {
+    console.log(name);
+    switch(name){
+      case 'map':
+        $('#replacement-target').html( $('#map-page').html() ); 
+        break;
+      case 'share':
+        $('#replacement-target').html( $('#share').html() ); 
+        break;
+      case 'send':
+        $('#replacement-target').html( $('#send').html() ); 
+        break;
+      case 'people':
+        $('#replacement-target').html( $('#people').html() ); 
+        break;
+      case 'history':
+        $('#replacement-target').html( $('#history').html() ); 
+        break;
+      case 'settings':
+        $('#replacement-target').html( $('#settings').html() ); 
+        break;
+    }
+  }
  //  $(document).on( "pagecontainershow", function(){
  //   ScaleContentToDevice();        
  // });
@@ -92,7 +115,7 @@ function loginUser() {
   var email = $('#login-txt-email').val();
   var password = $('#login-txt-password').val();
   firebase.auth().signInWithEmailAndPassword(email, password).then(function(user){
-    $.mobile.changePage("#map-page");
+    $.mobile.changePage("#main-page");
   },function(error) {
     // Handle Errors here.
     var errorCode = error.code;
