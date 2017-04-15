@@ -5,11 +5,16 @@ body
   margin: 0;
   padding: 0;
 }
-#map-ui-content {
+#map-content, #map-page {
   padding:0px;
-  margin: 0;
+  margin: 0px;
 }
-#map-ui-content,
-#map_canvas {
-  height: inherit;
+#map {
+    height: 100%;
+      padding:-16px;
+  margin: 0px;
+}
+
+body {
+	padding: 0px;
 }

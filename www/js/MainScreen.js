@@ -1,4 +1,6 @@
 // GLOBAL
+
+var userId;
     function onAppLoad() {
       console.log("onAppLoad")
       var config = {
@@ -13,41 +15,47 @@
     }
 
 //MAIN SCREEN
-    var map;
-    $(document).on("pageshow", "#map-page", function( event ) {
-      console.log("map-page");
-         ScaleContentToDevice();        
-      var div = document.getElementById("map_canvas");
+var map;
+var firstLocation = true;
+var currentPositionMarker;
+function initMap() {
+  ScaleContentToDevice();
+  map = new google.maps.Map(document.getElementById('map'), {
+  });
 
-      // Initialize the map view
-      map = plugin.google.maps.Map.getMap(div);
-      map.addEventListener(plugin.google.maps.event.MAP_READY, onMapReady);
-
-    })
-
-    function onMapReady() {
-     $.mobile.loadingMessage = false;
-
-     function onSuccess(position) {
-      map.moveCamera({
-        'target': new plugin.google.maps.LatLng(position.coords.latitude, position.coords.longitude),
-        'zoom': 18,
-      }, function() {
+  function onSuccess(position) {
+    var location = new google.maps.LatLng(position.coords.latitude, position.coords.longitude);
+    console.log(location);
+    if (firstLocation){
+      firstLocation = false;
+      map.panTo(location);
+      map.setZoom(15);
+      currentPositionMarker = new google.maps.Marker({
+        position: location,
+        map: map,
+        title: 'Hello World!'
       });
+    } else {
+      // currentPositionMarker.setPosition({lat: position.coords.latitude, lng: position.coords.longitude});
+      var database = firebase.database();
+        firebase.database().ref('users/' + userId).set({
+            currentPosition: position.coords,
+  });
     }
-
-    function onError(error) {
-      alert('code: '    + error.code    + '\n' +
-        'message: ' + error.message + '\n');
-    }
-    var watchID = navigator.geolocation.watchPosition(onSuccess, onError, { timeout: 30000 });
   }
+
+  function onError(error) {
+    alert('code: '    + error.code    + '\n' +
+      'message: ' + error.message + '\n');
+  }
+  var watchID = navigator.geolocation.watchPosition(onSuccess, onError, { timeout: 30000 });
+}
 
   function onMenuClick(name) {
     console.log(name);
     switch(name){
       case 'map':
-        $('#replacement-target').html( $('#map-page').html() ); 
+        $('#replacement-target').html( $('#map-content').html() ); 
         break;
       case 'share':
         $('#replacement-target').html( $('#share').html() ); 
@@ -66,18 +74,6 @@
         break;
     }
   }
- //  $(document).on( "pagecontainershow", function(){
- //   ScaleContentToDevice();        
- // });
-
- //  $(document).on( "pageshow", function( event, ui ) {
- //    console.log(event.target.id);
- //    ScaleContentToDevice();
- //  });
-
- //  $(window).on("resize orientationchange", function(){
- //   ScaleContentToDevice();
- // });
 
   function ScaleContentToDevice(){
    scroll(0, 0);
@@ -116,6 +112,7 @@ function loginUser() {
   var email = $('#login-txt-email').val();
   var password = $('#login-txt-password').val();
   firebase.auth().signInWithEmailAndPassword(email, password).then(function(user){
+    userId = user.uid;
     $.mobile.changePage("#map-page");
   },function(error) {
     // Handle Errors here.

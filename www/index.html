@@ -83,15 +83,18 @@
       <a href="#pushPanel" class="ui-btn-left ui-btn ui-btn-inline ui-mini ui-corner-all ui-btn-icon-left ui-icon-bars">Menu</a>
       <h1>Main Screen</h1>
     </div>
-    <div id="replacement-target">
-      <div role="main" class="ui-content" id="map-ui-content">
-        <div id="map_canvas"></div>
-      </div>
+    <div role="main" class="ui-content" id="replacement-target">
+
     </div>
   </div>
   <!-- MAP PAGE -->
-  <div data-role="page">
-    
+  <div data-role="page" id="map-page">
+      <div role="main" class="ui-content" id="map-content">
+    <div id="map"></div>
+      <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDAu9SY_8UXyNFxO7_m_54BG-8BlZbTl-k&callback=initMap"
+  async defer></script>
+      </div>
+    </div>
   </div>
 
   <!-- SHARE PAGE -->
