@@ -95,6 +95,11 @@ function registerUser() {
     navigator.notification.alert('Given passwords are different!');
   } else {
     firebase.auth().createUserWithEmailAndPassword(email, password).then(function(user){
+      userId = user.uid;
+        var database = firebase.database();
+        firebase.database().ref('users/' + userId).set({
+            email: user.email
+          })
       navigator.notification.alert('You are now registered!', function () {
         $.mobile.changePage("#login");
       });
