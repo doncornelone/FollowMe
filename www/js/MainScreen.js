@@ -38,7 +38,7 @@ function initMap() {
     } else {
       // currentPositionMarker.setPosition({lat: position.coords.latitude, lng: position.coords.longitude});
       var database = firebase.database();
-        firebase.database().ref('users/' + userId).set({
+        firebase.database().ref('users/' + userId).update({
             currentPosition: position.coords,
   });
     }
@@ -59,6 +59,7 @@ function initMap() {
         break;
       case 'share':
         $('#replacement-target').html( $('#share').html() ); 
+        initShare();
         break;
       case 'send':
         $('#replacement-target').html( $('#send').html() ); 
@@ -85,6 +86,21 @@ function initMap() {
    $.mobile.loader.prototype.options.disabled = true;
  });
 
+ //SHARE LOCATION
+ function initShare() {
+  var database = firebase.database();
+  firebase.database().ref('users').once('value').then(function(snapshot) {
+  console.log(snapshot.val());
+  var users = snapshot.val();
+  snapshot.forEach(function (snapshot){
+    email = snapshot.child("email").val();
+    if (email != null){
+    $("#location-recipient-list").append("<a class=\"ui-btn ui-btn-b ui-corner-all mc-top-margin-1-5\">" + email + "</a>");
+  }
+  });
+});
+}
+
 
 // REGISTRATION
 function registerUser() {
@@ -96,11 +112,11 @@ function registerUser() {
   } else {
     firebase.auth().createUserWithEmailAndPassword(email, password).then(function(user){
       userId = user.uid;
-        var database = firebase.database();
+      navigator.notification.alert('You are now registered!', function () {
+                var database = firebase.database();
         firebase.database().ref('users/' + userId).set({
             email: user.email
           })
-      navigator.notification.alert('You are now registered!', function () {
         $.mobile.changePage("#login");
       });
     },function(error) {

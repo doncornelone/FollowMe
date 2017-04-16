@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <script type="text/javascript" src="cordova.js"></script>
   <link rel="stylesheet" href="css/jquery.mobile-1.4.5.min.css" />
+  <link rel="stylesheet" href="css/jquery.mobile-1.4.5.min.css" />
   <script src="js/jquery-2.1.4.min.js"></script>
   <script src="js/MainScreen.js"></script>
   <script src="js/jquery.mobile-1.4.5.min.js"></script>
@@ -98,9 +99,14 @@
   </div>
 
   <!-- SHARE PAGE -->
-  <div data-role="page">
+  <div data-role="page" id="share-page">
     <div role="main" class="ui-content" id="share">
-      <p>Share location</p>
+      <h2>Choose duration</h2>
+      <a class="ui-btn ui-btn-b ui-corner-all mc-top-margin-1-5">5 minutes</a>
+      <a class="ui-btn ui-btn-b ui-corner-all mc-top-margin-1-5">15 minutes</a>
+      <a class="ui-btn ui-btn-b ui-corner-all mc-top-margin-1-5">30 minutes</a>
+      <h2>Choose recipient</h2>
+    <div id="location-recipient-list">
     </div>
   </div>
 
