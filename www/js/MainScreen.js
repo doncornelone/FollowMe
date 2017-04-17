@@ -115,7 +115,7 @@ function initMapPage() {
   }
 
   function getInfoWindowContent(avat, name) {
-      return "<div><img src=\"" + avat + "\" style=\"height:80px; width:80px;\" </div><div><p>" + name + "</p></div>"
+      return "<img src=\"" + avat + "\" style=\"height:40px; width:40px;\"<p>" + name + "</p>"
   }
 }
 
