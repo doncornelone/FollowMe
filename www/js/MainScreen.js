@@ -1,6 +1,8 @@
 // GLOBAL
 
 var userId;
+var username;
+var avatar;
 function onAppLoad() {
   console.log("onAppLoad")
   var config = {
@@ -92,7 +94,7 @@ function initMapPage() {
     });
 
     var infowindow = new google.maps.InfoWindow({
-      content: "My location"
+      content: getInfoWindowContent(avatar, username)
     });
     currentPositionMarker.addListener('click', function() {
       infowindow.open(map, currentPositionMarker);
@@ -110,6 +112,10 @@ function initMapPage() {
   function onError(error) {
     alert('code: '    + error.code    + '\n' +
       'message: ' + error.message + '\n');
+  }
+
+  function getInfoWindowContent(avat, name) {
+      return "<div><img src=\"" + avat + "\" style=\"height:80px; width:80px;\" </div><div><p>" + name + "</p></div>"
   }
 }
 
@@ -189,10 +195,16 @@ $(document).on('click', "#locationShareButton" , function(argument) {
 
 
 // REGISTRATION
+var chosenAvatarNumber = 1;
 function registerUser() {
+  var username = $('#register-txt-username').val();
   var email = $('#register-txt-email').val();
   var password = $('#register-txt-password').val();
   var passwordConfirm = $('#register-txt-password-confirm').val();
+  if (username) {} else {
+        navigator.notification.alert('Please specify your username.');
+        return
+  };
   if (password != passwordConfirm){
     navigator.notification.alert('Given passwords are different!');
   } else {
@@ -201,7 +213,9 @@ function registerUser() {
       navigator.notification.alert('You are now registered!', function () {
         var database = firebase.database();
         firebase.database().ref('users/' + userId).set({
-          email: user.email
+          email: user.email,
+          avatar: "img/av" + chosenAvatarNumber + ".png",
+          username: "@" + username
         })
         $.mobile.changePage("#login");
       });
@@ -214,12 +228,29 @@ function registerUser() {
   };
 }
 
+function chosenAvatar(number) {
+  console.log(number);
+  chosenAvatarNumber = number;
+  for (var i = 1; i < 10; i++){
+    $('#av' + i).removeClass("ui-bar-a");
+    $('#av' + i).addClass("ui-bar-b")
+  }
+  $('#av' + number).removeClass("ui-bar-b");
+  $('#av' + number).addClass("ui-bar-a")
+}
+
 // LOGIN
 function loginUser() {
   var email = $('#login-txt-email').val();
   var password = $('#login-txt-password').val();
   firebase.auth().signInWithEmailAndPassword(email, password).then(function(user){
     userId = user.uid;
+    var database = firebase.database();
+    firebase.database().ref('users/' + userId).once('value').then(function(snapshot) {
+    var user = snapshot.val();
+    avatar = user.avatar;
+    username = user.username;
+  });
     $.mobile.changePage("#map-page");
   },function(error) {
     // Handle Errors here.

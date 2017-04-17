@@ -5,7 +5,6 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <script type="text/javascript" src="cordova.js"></script>
   <link rel="stylesheet" href="css/jquery.mobile-1.4.5.min.css" />
-  <link rel="stylesheet" href="css/jquery.mobile-1.4.5.min.css" />
   <script src="js/jquery-2.1.4.min.js"></script>
   <script src="js/MainScreen.js"></script>
   <script src="js/jquery.mobile-1.4.5.min.js"></script>
@@ -18,7 +17,7 @@
   <!-- LANDING PAGE -->
   <div data-role="page" id="landing">
     <div data-role="header">
-      <h1>Book It</h1>
+      <h1>FollowMe</h1>
     </div><!-- /header -->
     <div role="main" class="ui-content">
       <h2 class="mc-text-center">Welcome!</h2>
@@ -33,8 +32,8 @@
 
   <!-- LOGIN PAGE -->
   <div data-role="page" id="login">
-    <div data-role="header" data-theme="c">
-      <h1>Book It</h1>
+    <div data-role="header">
+      <h1>FollowMe</h1>
     </div><!-- /header -->
     <div role="main" class="ui-content">
       <h3>Sign In</h3>
@@ -53,17 +52,31 @@
 
   <!-- REGISTRIATION PAGE -->
   <div data-role="page" id="register">
-    <div data-role="header" data-theme="c">
-      <h1>Book It</h1>
+    <div data-role="header">
+      <h1>FollowMe</h1>
     </div>
     <div role="main" class="ui-content">
       <h3>Sign Up</h3>
+      <label for="txt-username">User Name</label>
+      <input type="text" name="txt-username" id="register-txt-username" value="">
       <label for="txt-email">Email Address</label>
       <input type="text" name="txt-email" id="register-txt-email" value="">
       <label for="txt-password">Password</label>
       <input type="password" name="txt-password" id="register-txt-password" value="">
       <label for="txt-password-confirm">Confirm Password</label>
       <input type="password" name="txt-password-confirm" id="register-txt-password-confirm" value="">
+      <div class="ui-grid-b">
+      <label>Choose Avatar</label>
+        <div class="ui-block-a"><div id="av1" class="ui-bar ui-bar-a" style="text-align: center"><img src="img/av1.png" style="height:80px; width:80px;"onclick="chosenAvatar(1)"></div></div>
+        <div class="ui-block-b"><div id="av2" class="ui-bar ui-bar-b" style="text-align: center"><img src="img/av2.png" style="height:80px; width:80px;"onclick="chosenAvatar(2)"></div></div>
+        <div class="ui-block-c"><div id="av3" class="ui-bar ui-bar-b" style="text-align: center"><img src="img/av3.png" style="height:80px; width:80px;"onclick="chosenAvatar(3)"></div></div>
+        <div class="ui-block-a"><div id="av4" class="ui-bar ui-bar-b" style="text-align: center"><img src="img/av4.png" style="height:80px; width:80px;"onclick="chosenAvatar(4)"></div></div>
+        <div class="ui-block-b"><div id="av5" class="ui-bar ui-bar-b" style="text-align: center"><img src="img/av5.png" style="height:80px; width:80px;"onclick="chosenAvatar(5)"></div></div>
+        <div class="ui-block-c"><div id="av6" class="ui-bar ui-bar-b" style="text-align: center"><img src="img/av6.png" style="height:80px; width:80px;"onclick="chosenAvatar(6)"></div></div>
+        <div class="ui-block-a"><div id="av7" class="ui-bar ui-bar-b" style="text-align: center"><img src="img/av7.png" style="height:80px; width:80px;"onclick="chosenAvatar(7)"></div></div>
+        <div class="ui-block-b"><div id="av8" class="ui-bar ui-bar-b" style="text-align: center"><img src="img/av8.png" style="height:80px; width:80px;"onclick="chosenAvatar(8)"></div></div>
+        <div class="ui-block-c"><div id="av9" class="ui-bar ui-bar-b" style="text-align: center"><img src="img/av9.png" style="height:80px; width:80px;"onclick="chosenAvatar(9)"></div></div>
+      </div>
       <a id="btn-submit" class="ui-btn ui-btn-b ui-corner-all mc-top-margin-1-5" onclick="registerUser()">Submit</a>
     </div><!-- /content -->
   </div><!-- /page -->
@@ -85,7 +98,8 @@
       <h1>Main Screen</h1>
     </div>
     <div role="main" class="ui-content" id="replacement-target">
-
+        <div >
+        </div>
     </div>
   </div>
   <!-- MAP PAGE -->
