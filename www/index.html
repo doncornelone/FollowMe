@@ -8,6 +8,7 @@
   <script src="js/jquery-2.1.4.min.js"></script>
   <script src="js/MainScreen.js"></script>
   <script src="js/jquery.mobile-1.4.5.min.js"></script>
+  <script src="js/dateformat.js"></script>
   <script src="js/firebase.js"></script>
   <link rel="stylesheet" href="css/themes/my-custom-theme.css" />
   <link rel="stylesheet" href="css/style.css" />
@@ -66,7 +67,7 @@
       <label for="txt-password-confirm">Confirm Password</label>
       <input type="password" name="txt-password-confirm" id="register-txt-password-confirm" value="">
       <div class="ui-grid-b">
-      <label>Choose Avatar</label>
+        <label>Choose Avatar</label>
         <div class="ui-block-a"><div id="av1" class="ui-bar ui-bar-a" style="text-align: center"><img src="img/av1.png" style="height:80px; width:80px;"onclick="chosenAvatar(1)"></div></div>
         <div class="ui-block-b"><div id="av2" class="ui-bar ui-bar-b" style="text-align: center"><img src="img/av2.png" style="height:80px; width:80px;"onclick="chosenAvatar(2)"></div></div>
         <div class="ui-block-c"><div id="av3" class="ui-bar ui-bar-b" style="text-align: center"><img src="img/av3.png" style="height:80px; width:80px;"onclick="chosenAvatar(3)"></div></div>
@@ -81,76 +82,103 @@
     </div><!-- /content -->
   </div><!-- /page -->
 
-  <!-- MAP PAGE-->
-    <div data-role="page" id="map-page">
-    <div data-role="panel" id="pushPanel" data-display="push"> 
-      <ul data-role="listview" data-inset="true">
-        <li><a href="#map-page" onclick="onMenuClick('map')" data-rel="close"><img class="ui-li-icon">Map</a></li>
-        <li><a href="#map-page" onclick="onMenuClick('share')" data-rel="close"><img class="ui-li-icon">Share location</a></li>
-        <li><a href="#map-page" onclick="onMenuClick('send')" data-rel="close"><img class="ui-li-icon">Send message</a></li>
-        <li><a href="#map-page" onclick="onMenuClick('people')" data-rel="close"><img class="ui-li-icon">People</a></li>
-        <li><a href="#map-page" onclick="onMenuClick('history')" data-rel="close"><img class="ui-li-icon">History</a></li>
-        <li><a href="#map-page" onclick="onMenuClick('settings')" data-rel="close"><img class="ui-li-icon">Settings</a></li>
-      </ul>
-    </div> 
+
+<!-- CHAT PAGE-->
+  <div data-role="page" id="chat-page">
     <div data-role="header">
-      <a href="#pushPanel" class="ui-btn-left ui-btn ui-btn-inline ui-mini ui-corner-all ui-btn-icon-left ui-icon-bars">Menu</a>
-      <h1>Main Screen</h1>
+      <h1>Chat</h1>
     </div>
-    <div role="main" class="ui-content" id="replacement-target">
-        <div >
-        </div>
-    </div>
-  </div>
-  <!-- MAP PAGE -->
-  <div data-role="page" id="map-page">
-      <div role="main" class="ui-content" id="map-content">
-    <div id="map"></div>
-      <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDAu9SY_8UXyNFxO7_m_54BG-8BlZbTl-k&callback=initMap"
-  async defer></script>
+    <div role="main" class="ui-content">
+      <div id="messages-list" class="ui-grid-a">
       </div>
-    </div>
+    </div><!-- /content -->
+    <div data-role="footer">
+      <table style="width: 100%"><tr>
+        <td valign="center">
+          <input type="text" name="txt-message" id="txt-message" value="">
+        </td>
+        <td valign="center">
+        <a id="btn-send-chat" class="ui-btn ui-btn-b ui-corner-all mc-top-margin-1-5" onclick="sendMessage()">Send</a>
+        </td>
+      </tr>
+    </table>       
   </div>
+</div><!-- /page -->
 
-  <!-- SHARE PAGE -->
-  <div data-role="page" id="share-page">
-    <div role="main" class="ui-content" id="share">
-      <h2>Choose duration</h2>
-      <a class="ui-btn ui-btn-b ui-corner-all mc-top-margin-1-5" onclick="durationClick(5)">5 minutes</a>
-      <a class="ui-btn ui-btn-b ui-corner-all mc-top-margin-1-5" onclick="durationClick(15)">15 minutes</a>
-      <a class="ui-btn ui-btn-b ui-corner-all mc-top-margin-1-5" onclick="durationClick(30)">30 minutes</a>
-      <h2>Choose recipient</h2>
-    <div id="location-recipient-list">
+<!-- MAP PAGE-->
+<div data-role="page" id="map-page">
+  <div data-role="panel" id="pushPanel" data-display="push"> 
+    <ul data-role="listview" data-inset="true">
+      <li><a href="#map-page" onclick="onMenuClick('map')" data-rel="close"><img class="ui-li-icon">Map</a></li>
+      <li><a href="#map-page" onclick="onMenuClick('share')" data-rel="close"><img class="ui-li-icon">Share location</a></li>
+      <li><a href="#map-page" onclick="onMenuClick('people')" data-rel="close"><img class="ui-li-icon">People</a></li>
+      <li><a href="#map-page" onclick="onMenuClick('history')" data-rel="close"><img class="ui-li-icon">History</a></li>
+      <li><a href="#map-page" onclick="onMenuClick('settings')" data-rel="close"><img class="ui-li-icon">Settings</a></li>
+    </ul>
+  </div> 
+  <div data-role="header">
+    <a href="#pushPanel" class="ui-btn-left ui-btn ui-btn-inline ui-mini ui-corner-all ui-btn-icon-left ui-icon-bars">Menu</a>
+    <h1>Main Screen</h1>
+  </div>
+  <div role="main" class="ui-content" id="replacement-target">
+    <div >
     </div>
   </div>
+</div>
+</div>
+</div>
+<!-- MAP PAGE -->
+<div data-role="page" id="map-page">
+  <div role="main" class="ui-content" id="map-content">
+    <div id="map"></div>
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDAu9SY_8UXyNFxO7_m_54BG-8BlZbTl-k&callback=initMap"
+    async defer></script>
+  </div>
+</div>
+</div>
 
-    <!-- SEND PAGE -->
-  <div data-role="page">
-    <div role="main" class="ui-content" id="send">
-      <p>Send message</p>
+<!-- SHARE PAGE -->
+<div data-role="page" id="share-page">
+  <div role="main" class="ui-content" id="share">
+    <h2>Choose duration</h2>
+    <div class="ui-grid-b">
+     <div class="ui-block-a">
+      <a class="ui-btn ui-btn-b ui-corner-all mc-top-margin-1-5" onclick="durationClick(5)">5 min</a>
+    </div>
+    <div class="ui-block-b">
+      <a class="ui-btn ui-btn-b ui-corner-all mc-top-margin-1-5" onclick="durationClick(15)">15 min</a>
+    </div>
+    <div class="ui-block-c">
+      <a class="ui-btn ui-btn-b ui-corner-all mc-top-margin-1-5" onclick="durationClick(30)">30 min</a>
     </div>
   </div>
+  <h2>Choose recipient</h2>
+  <div id="location-recipient-list">
+  </div>
+</div>
 
-    <!-- PEOPLE PAGE -->
-  <div data-role="page">
-    <div role="main" class="ui-content" id="people">
-      <p>People</p>
+<!-- PEOPLE PAGE -->
+<div data-role="page">
+  <div role="main" class="ui-content" id="people">
+    <h2>Chat with</h2>
+    <div id="people-list">
     </div>
   </div>
+</div>
 
-    <!-- HISTORY PAGE -->
-  <div data-role="page">
-    <div role="main" class="ui-content" id="history">
-      <p>History</p>
-    </div>
+<!-- HISTORY PAGE -->
+<div data-role="page">
+  <div role="main" class="ui-content" id="history">
+    <p>History</p>
   </div>
+</div>
 
-    <!-- SETTINGS PAGE -->
-  <div data-role="page">
-    <div role="main" class="ui-content" id="settings">
-      <p>Settings</p>
-    </div>
+<!-- SETTINGS PAGE -->
+<div data-role="page">
+  <div role="main" class="ui-content" id="settings">
+    <p>Settings</p>
   </div>
+</div>
 </body>
 </html>
 </body>

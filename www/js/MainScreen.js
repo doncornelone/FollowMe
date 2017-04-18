@@ -48,11 +48,14 @@ function initMapPage() {
         marker.addListener('click', function() {
           infowindow.open(map, marker);
         });
-        sharedLocationMarkerArray.push({
+        firebase.database().ref('users/' + snapshot.child("authorId").val()).once('value').then(function(sna) {
+          sharedLocationMarkerArray.push({
           marker: marker,
           infowindow: infowindow,
           authorId : snapshot.child("authorId").val(),
+          author : sna.val(),
           expirationTime : snapshot.child("expirationTime").val()
+        });
         });
       }
 
@@ -64,17 +67,19 @@ function initMapPage() {
           for (var i = 0; i < sharedLocationMarkerArray.length; i++){
             var shared = sharedLocationMarkerArray[i];
             var currentTime = new Date().getTime();
-            console.log(shared.authorId + " " +  shared.expirationTime + " " + currentTime)
             if (shared.authorId == snapshot.child("authorId").val()){
               if (shared.expirationTime - currentTime > 0){
-              shared.marker.setVisible(true);
-              shared.infowindow.open(map, shared.marker);
-              shared.marker.setPosition(new google.maps.LatLng(latitude,longitude));
-              shared.infowindow.open(map, shared.marker);
-            } else {
-              shared.marker.setVisible(false);
-              shared.infowindow.close();
-            }
+                shared.marker.setVisible(true);
+                var expDate = new Date();
+                expDate.setTime(shared.expirationTime);
+                shared.infowindow.setContent(getUserInfoWindowContent(shared.author.avatar, shared.author.username, "expires at " + expDate.format('HH:mm')));
+                shared.infowindow.open(map, shared.marker);
+                shared.marker.setPosition(new google.maps.LatLng(latitude,longitude));
+                shared.infowindow.open(map, shared.marker);
+              } else {
+                shared.marker.setVisible(false);
+                shared.infowindow.close();
+              }
             }
           }          
         }
@@ -83,25 +88,25 @@ function initMapPage() {
   });
 
   function onSuccess(position) {
-  var location = new google.maps.LatLng(position.coords.latitude, position.coords.longitude);
-  if (firstLocation){
-    firstLocation = false;
-    map.panTo(location);
-    map.setZoom(15);
-    currentPositionMarker = new google.maps.Marker({
-      position: location,
-      map: map,
-    });
+    var location = new google.maps.LatLng(position.coords.latitude, position.coords.longitude);
+    if (firstLocation){
+      firstLocation = false;
+      map.panTo(location);
+      map.setZoom(15);
+      currentPositionMarker = new google.maps.Marker({
+        position: location,
+        map: map,
+      });
 
-    var infowindow = new google.maps.InfoWindow({
-      content: getInfoWindowContent(avatar, username)
-    });
-    currentPositionMarker.addListener('click', function() {
+      var infowindow = new google.maps.InfoWindow({
+        content: getCurrentUserInfoWindowContent(avatar, username)
+      });
+      currentPositionMarker.addListener('click', function() {
+        infowindow.open(map, currentPositionMarker);
+      });
       infowindow.open(map, currentPositionMarker);
-    });
-    infowindow.open(map, currentPositionMarker);
-  } else {
-      // currentPositionMarker.setPosition({lat: position.coords.latitude, lng: position.coords.longitude});
+    } else {
+      currentPositionMarker.setPosition({lat: position.coords.latitude, lng: position.coords.longitude});
       var database = firebase.database();
       firebase.database().ref('users/' + userId).update({
         currentPosition: position.coords,
@@ -114,10 +119,34 @@ function initMapPage() {
       'message: ' + error.message + '\n');
   }
 
-  function getInfoWindowContent(avat, name) {
-      return "<img src=\"" + avat + "\" style=\"height:40px; width:40px;\"<p>" + name + "</p>"
+  function getCurrentUserInfoWindowContent(avat, name) {
+      //return "<img src=\"" + avat + "\" style=\"height:40px; width:40px;\"><h2>hejka</h2>" + name + "</h2>"
+      return '<div id="content">'+
+      '<div id="bodyContent">'+
+      '<table>'+
+      '<tr>'+
+      '<td valign="top"><img src=\"' + avat + '\" style=\"height:40px; width:40px;\"></td>'+
+      '<td valign="top">' + name +'</td>'+
+      '</tr>'+
+      '</table>'+
+      '</div>'+
+      '</div>';
+    }
+
+      function getUserInfoWindowContent(avat, name, expiresAt) {
+      //return "<img src=\"" + avat + "\" style=\"height:40px; width:40px;\"><h2>hejka</h2>" + name + "</h2>"
+      return '<div id="content">'+
+      '<div id="bodyContent">'+
+      '<table>'+
+      '<tr>'+
+      '<td valign="top"><img src=\"' + avat + '\" style=\"height:40px; width:40px;\"></td>'+
+      '<td valign="top">' + name +'<br>' + expiresAt +'</td>'+
+      '</tr>'+
+      '</table>'+
+      '</div>'+
+      '</div>';
+    }
   }
-}
 
   function onMenuClick(name) {
     console.log(name);
@@ -130,11 +159,9 @@ function initMapPage() {
       $('#replacement-target').html( $('#share').html() ); 
       initShare();
       break;
-      case 'send':
-      $('#replacement-target').html( $('#send').html() ); 
-      break;
       case 'people':
       $('#replacement-target').html( $('#people').html() ); 
+      initPeople();
       break;
       case 'history':
       $('#replacement-target').html( $('#history').html() ); 
@@ -145,10 +172,85 @@ function initMapPage() {
     }
   }
 
+//PEOPLE
+var chosenMessageUser;
+function initPeople() {
+  var database = firebase.database();
+  firebase.database().ref('users').once('value').then(function(snapshot) {
+    console.log(snapshot.val());
+    var users = snapshot.val();
+    snapshot.forEach(function (snapshot){
+      key = snapshot.key;
+      email = snapshot.child("email").val();
+      var name = snapshot.child("username").val();
+      var avat = snapshot.child("avatar").val();
+      if (email != null && key != userId){
+        $("#people-list").append("<a id=\"startChat\" href=\"#chat-page\" download=\"" + key + "\"class=\"ui-btn ui-btn-b ui-corner-all mc-top-margin-1-5\"><table><tr><td valign=\"center\"><img src=\"" + avat + "\" style=\"height:40px; width:40px;\"></td><td valign=\"center\">" + name + "</td></tr></table></a>");
+      }
+    });
+  });
+}
+
+$(document).on('click', "#startChat" , function(argument) {
+  console.log("sendmessage");
+  chosenMessageUser = argument.target.download;
+  $.mobile.changePage("#chat-page");
+
+});
+
+//CHAT PAGE
+$(document).on("pageshow","#chat-page",function(){
+  scaleNormal()
+  var starCountRef = firebase.database().ref('messages');
+      starCountRef.orderByChild("time");
+      starCountRef.on('value', function(snap) {
+          $("messages-list").empty();
+          console.log($("messages-list"))
+          snap.forEach(function(s){
+          var authorId = s.child("authorId").val();
+          var recipientId = s.child("recipientId").val();
+          console.log(authorId + " " + recipientId + " " + userId)
+          var currentUserMessage = "";
+          var otherUserMessage = "";
+          if (authorId == userId){
+              currentUserMessage = '<div class="ui-body ui-body-a ui-corner-all">'+ s.child("content").val() +'</div>';
+          } else {
+              otherUserMessage = '<div class="ui-body ui-body-a ui-corner-all">'+ s.child("content").val() +'</div>';
+          }
+          $("#messages-list").append('<div class="ui-block-a">' +
+          otherUserMessage +
+          '</div>'+
+          '<div class="ui-block-b">'+
+          currentUserMessage +
+          '</div>')
+          })
+      })
+});
+
+function sendMessage(){
+  var date = new Date();
+  var message = $('#txt-message').val();
+  $('#txt-message').val("");
+  console.log(message);
+  var newShareKey = firebase.database().ref().child('messages').push().key;
+  firebase.database().ref('messages/' + newShareKey).set({
+    time: date.getTime(),
+    authorId: userId,
+    recipientId: chosenMessageUser,
+    content: message
+  });
+}
+
   function ScaleContentToDevice(){
    scroll(0, 0);
    var content = $.mobile.getScreenHeight() - $(".ui-header").outerHeight() - $(".ui-footer").outerHeight() - $(".ui-content").outerHeight() + $(".ui-content").height();
    $(".ui-content").height(content);
+ }
+
+ function scaleNormal(){
+   scroll(0, 0);
+   var content = $.mobile.getScreenHeight() - $(".ui-header").outerHeight() - $(".ui-footer").outerHeight() - $(".ui-content").outerHeight() + $(".ui-content").height() ;
+   $(".ui-content").height(content); 
  }
  
  $( document ).on( "mobileinit", function() {
@@ -166,8 +268,10 @@ function initMapPage() {
     snapshot.forEach(function (snapshot){
       key = snapshot.key;
       email = snapshot.child("email").val();
+      var name = snapshot.child("username").val();
+      var avat = snapshot.child("avatar").val();
       if (email != null && key != userId){
-        $("#location-recipient-list").append("<a id=\"locationShareButton\" download=\"" + key + "\"class=\"ui-btn ui-btn-b ui-corner-all mc-top-margin-1-5\">" + email + "</a>");
+        $("#location-recipient-list").append("<a id=\"locationShareButton\" download=\"" + key + "\"class=\"ui-btn ui-btn-b ui-corner-all mc-top-margin-1-5\"><table><tr><td valign=\"center\"><img src=\"" + avat + "\" style=\"height:40px; width:40px;\"></td><td valign=\"center\">" + name + "</td></tr></table></a>");
       }
     });
   });
@@ -202,8 +306,8 @@ function registerUser() {
   var password = $('#register-txt-password').val();
   var passwordConfirm = $('#register-txt-password-confirm').val();
   if (username) {} else {
-        navigator.notification.alert('Please specify your username.');
-        return
+    navigator.notification.alert('Please specify your username.');
+    return
   };
   if (password != passwordConfirm){
     navigator.notification.alert('Given passwords are different!');
@@ -247,10 +351,10 @@ function loginUser() {
     userId = user.uid;
     var database = firebase.database();
     firebase.database().ref('users/' + userId).once('value').then(function(snapshot) {
-    var user = snapshot.val();
-    avatar = user.avatar;
-    username = user.username;
-  });
+      var user = snapshot.val();
+      avatar = user.avatar;
+      username = user.username;
+    });
     $.mobile.changePage("#map-page");
   },function(error) {
     // Handle Errors here.
