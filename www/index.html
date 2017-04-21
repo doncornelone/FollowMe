@@ -169,14 +169,24 @@
 <!-- HISTORY PAGE -->
 <div data-role="page">
   <div role="main" class="ui-content" id="history">
-    <p>History</p>
+    <div class="ui-grid-a">
+     <div class="ui-block-a">
+      <a class="ui-btn ui-btn-b ui-corner-all mc-top-margin-1-5" onclick="historyClick(0);">My shares</a>
+    </div>
+    <div class="ui-block-b">
+      <a class="ui-btn ui-btn-b ui-corner-all mc-top-margin-1-5" onclick="historyClick(1);">Shared to me</a>
+    </div>
+    <div id="shares-history">
+      
+    </div>
   </div>
 </div>
 
 <!-- SETTINGS PAGE -->
 <div data-role="page">
   <div role="main" class="ui-content" id="settings">
-    <p>Settings</p>
+    <a class="ui-btn ui-btn-b ui-corner-all mc-top-margin-1-5" onclick="resetPass(userEmail)">Reset password</a>
+    <a class="ui-btn ui-btn-b ui-corner-all mc-top-margin-1-5" onclick="logout()">Logout</a>
   </div>
 </div>
 </body>

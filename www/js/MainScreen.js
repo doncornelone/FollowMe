@@ -3,6 +3,7 @@
 var userId;
 var username;
 var avatar;
+var userEmail;
 function onAppLoad() {
   console.log("onAppLoad")
   var config = {
@@ -14,7 +15,6 @@ function onAppLoad() {
     messagingSenderId: "1097771959425"
   };
   firebase.initializeApp(config);
-  $('#replacement-target').html( $('#history').html() ); 
 }
 
 //MAIN SCREEN
@@ -50,12 +50,12 @@ function initMapPage() {
         });
         firebase.database().ref('users/' + snapshot.child("authorId").val()).once('value').then(function(sna) {
           sharedLocationMarkerArray.push({
-          marker: marker,
-          infowindow: infowindow,
-          authorId : snapshot.child("authorId").val(),
-          author : sna.val(),
-          expirationTime : snapshot.child("expirationTime").val()
-        });
+            marker: marker,
+            infowindow: infowindow,
+            authorId : snapshot.child("authorId").val(),
+            author : sna.val(),
+            expirationTime : snapshot.child("expirationTime").val()
+          });
         });
       }
 
@@ -72,7 +72,7 @@ function initMapPage() {
                 shared.marker.setVisible(true);
                 var expDate = new Date();
                 expDate.setTime(shared.expirationTime);
-                shared.infowindow.setContent(getUserInfoWindowContent(shared.author.avatar, shared.author.username, "expires at " + expDate.format('HH:mm')));
+                shared.infowindow.setContent(getUserInfoWindowContent(shared.author.avatar, shared.author.username, "expires at " + expDate.format('HH:MM')));
                 shared.infowindow.open(map, shared.marker);
                 shared.marker.setPosition(new google.maps.LatLng(latitude,longitude));
                 shared.infowindow.open(map, shared.marker);
@@ -120,57 +120,99 @@ function initMapPage() {
   }
 
   function getCurrentUserInfoWindowContent(avat, name) {
-      //return "<img src=\"" + avat + "\" style=\"height:40px; width:40px;\"><h2>hejka</h2>" + name + "</h2>"
-      return '<div id="content">'+
-      '<div id="bodyContent">'+
-      '<table>'+
-      '<tr>'+
-      '<td valign="top"><img src=\"' + avat + '\" style=\"height:40px; width:40px;\"></td>'+
-      '<td valign="top">' + name +'</td>'+
-      '</tr>'+
-      '</table>'+
-      '</div>'+
-      '</div>';
-    }
-
-      function getUserInfoWindowContent(avat, name, expiresAt) {
-      //return "<img src=\"" + avat + "\" style=\"height:40px; width:40px;\"><h2>hejka</h2>" + name + "</h2>"
-      return '<div id="content">'+
-      '<div id="bodyContent">'+
-      '<table>'+
-      '<tr>'+
-      '<td valign="top"><img src=\"' + avat + '\" style=\"height:40px; width:40px;\"></td>'+
-      '<td valign="top">' + name +'<br>' + expiresAt +'</td>'+
-      '</tr>'+
-      '</table>'+
-      '</div>'+
-      '</div>';
-    }
+    return '<div id="content">'+
+    '<div id="bodyContent">'+
+    '<table>'+
+    '<tr>'+
+    '<td valign="top"><img src=\"' + avat + '\" style=\"height:40px; width:40px;\"></td>'+
+    '<td valign="top">' + name +'</td>'+
+    '</tr>'+
+    '</table>'+
+    '</div>'+
+    '</div>';
   }
 
-  function onMenuClick(name) {
-    console.log(name);
-    switch(name){
-      case 'map':
-      $('#replacement-target').html( $('#map-content').html() ); 
-      initMapPage();
-      break;
-      case 'share':
-      $('#replacement-target').html( $('#share').html() ); 
-      initShare();
-      break;
-      case 'people':
-      $('#replacement-target').html( $('#people').html() ); 
-      initPeople();
-      break;
-      case 'history':
-      $('#replacement-target').html( $('#history').html() ); 
-      break;
-      case 'settings':
-      $('#replacement-target').html( $('#settings').html() ); 
-      break;
-    }
+  function getUserInfoWindowContent(avat, name, expiresAt) {
+    return '<div id="content">'+
+    '<div id="bodyContent">'+
+    '<table>'+
+    '<tr>'+
+    '<td valign="top"><img src=\"' + avat + '\" style=\"height:40px; width:40px;\"></td>'+
+    '<td valign="top">' + name +'<br>' + expiresAt +'</td>'+
+    '</tr>'+
+    '</table>'+
+    '</div>'+
+    '</div>';
   }
+}
+
+function onMenuClick(name) {
+  console.log(name);
+  switch(name){
+    case 'map':
+    $('#replacement-target').html( $('#map-content').html() ); 
+    initMapPage();
+    break;
+    case 'share':
+    $('#replacement-target').html( $('#share').html() ); 
+    initShare();
+    break;
+    case 'people':
+    $('#replacement-target').html( $('#people').html() ); 
+    initPeople();
+    break;
+    case 'history':
+    $('#replacement-target').html( $('#history').html() ); 
+    historyClick(0);
+    break;
+    case 'settings':
+    $('#replacement-target').html( $('#settings').html() ); 
+    break;
+  }
+}
+
+// HISTORY
+var historyType = 0
+function historyClick(argument) {
+  console.log("history click");
+  historyType = argument;
+  $("#shares-history").empty();
+  initHistory();
+}
+
+function initHistory(){
+  firebase.database().ref('location-shares').once('value').then(function(snap) {
+    console.log(snap.val())
+    snap.forEach(function (snapshot){
+      var authorId = snapshot.child("authorId").val();
+      var recipientId = snapshot.child("recipientId").val();
+      var expirationTime = snapshot.child("expirationTime").val();
+      var expirationDate = new Date();
+      expirationDate.setTime(expirationTime);
+      var expirationString = expirationDate.format('dd.mm.yyyy HH:MM')
+      var id;
+      if (historyType == 0){
+        id = recipientId;
+      } else {
+        id = authorId;
+      }
+      firebase.database().ref('users/' + id).once('value').then(function(s){
+        var name = s.child("username").val();
+        var avat = s.child("avatar").val();
+        var htm = "<a class=\"ui-btn ui-btn-b ui-corner-all mc-top-margin-1-5\"><table><tr><td valign=\"center\"><img src=\"" + avat + "\" style=\"height:40px; width:40px;\"></td><td valign=\"center\">" + name + "<br><b style=\"color:#aaaaaa; font-size:12px\"> expiration time:" + expirationString + "</b></td></tr></table></a>";
+        if (historyType == 0){
+          if (authorId == userId){
+            $("#shares-history").append(htm);
+          }
+        } else if (historyType == 1){
+          if (authorId != userId){
+            $("#shares-history").append(htm);
+          }
+        }
+      });
+    });
+  });
+}
 
 //PEOPLE
 var chosenMessageUser;
@@ -202,29 +244,29 @@ $(document).on('click', "#startChat" , function(argument) {
 $(document).on("pageshow","#chat-page",function(){
   scaleNormal()
   var starCountRef = firebase.database().ref('messages');
-      starCountRef.orderByChild("time");
-      starCountRef.on('value', function(snap) {
-          $("messages-list").empty();
-          console.log($("messages-list"))
-          snap.forEach(function(s){
-          var authorId = s.child("authorId").val();
-          var recipientId = s.child("recipientId").val();
-          console.log(authorId + " " + recipientId + " " + userId)
-          var currentUserMessage = "";
-          var otherUserMessage = "";
-          if (authorId == userId){
-              currentUserMessage = '<div class="ui-body ui-body-a ui-corner-all">'+ s.child("content").val() +'</div>';
-          } else {
-              otherUserMessage = '<div class="ui-body ui-body-a ui-corner-all">'+ s.child("content").val() +'</div>';
-          }
-          $("#messages-list").append('<div class="ui-block-a">' +
-          otherUserMessage +
-          '</div>'+
-          '<div class="ui-block-b">'+
-          currentUserMessage +
-          '</div>')
-          })
-      })
+  starCountRef.orderByChild("time");
+  starCountRef.on('value', function(snap) {
+    $("messages-list").empty();
+    console.log($("#messages-list").empty())
+    snap.forEach(function(s){
+      var authorId = s.child("authorId").val();
+      var recipientId = s.child("recipientId").val();
+      console.log(authorId + " " + recipientId + " " + userId)
+      var currentUserMessage = "";
+      var otherUserMessage = "";
+      if (authorId == userId){
+        currentUserMessage = '<div class="ui-body ui-body-a ui-corner-all">'+ s.child("content").val() +'</div>';
+      } else if (recipientId == userId){
+        otherUserMessage = '<div class="ui-body ui-body-a ui-corner-all">'+ s.child("content").val() +'</div>';
+      }
+      $("#messages-list").append('<div class="ui-block-a">' +
+        otherUserMessage +
+        '</div>'+
+        '<div class="ui-block-b">'+
+        currentUserMessage +
+        '</div>')
+    })
+  })
 });
 
 function sendMessage(){
@@ -241,21 +283,21 @@ function sendMessage(){
   });
 }
 
-  function ScaleContentToDevice(){
-   scroll(0, 0);
-   var content = $.mobile.getScreenHeight() - $(".ui-header").outerHeight() - $(".ui-footer").outerHeight() - $(".ui-content").outerHeight() + $(".ui-content").height();
-   $(".ui-content").height(content);
- }
+function ScaleContentToDevice(){
+ scroll(0, 0);
+ var content = $.mobile.getScreenHeight() - $(".ui-header").outerHeight() - $(".ui-footer").outerHeight() - $(".ui-content").outerHeight() + $(".ui-content").height();
+ $(".ui-content").height(content);
+}
 
- function scaleNormal(){
-   scroll(0, 0);
-   var content = $.mobile.getScreenHeight() - $(".ui-header").outerHeight() - $(".ui-footer").outerHeight() - $(".ui-content").outerHeight() + $(".ui-content").height() ;
-   $(".ui-content").height(content); 
- }
- 
- $( document ).on( "mobileinit", function() {
-   $.mobile.loader.prototype.options.disabled = true;
- });
+function scaleNormal(){
+ scroll(0, 0);
+ var content = $.mobile.getScreenHeight() - $(".ui-header").outerHeight() - $(".ui-footer").outerHeight() - $(".ui-content").outerHeight() + $(".ui-content").height() ;
+ $(".ui-content").height(content); 
+}
+
+$( document ).on( "mobileinit", function() {
+ $.mobile.loader.prototype.options.disabled = true;
+});
 
  //SHARE LOCATION
  var locationShareDuration = 5;
@@ -278,7 +320,7 @@ function sendMessage(){
 }
 
 function durationClick(duration) {
-  locationShareDuration = duraton;
+  locationShareDuration = duration;
 }
 
 $(document).on('click', "#locationShareButton" , function(argument) {
@@ -348,12 +390,15 @@ function loginUser() {
   var email = $('#login-txt-email').val();
   var password = $('#login-txt-password').val();
   firebase.auth().signInWithEmailAndPassword(email, password).then(function(user){
+    userEmail = email;
     userId = user.uid;
     var database = firebase.database();
     firebase.database().ref('users/' + userId).once('value').then(function(snapshot) {
       var user = snapshot.val();
       avatar = user.avatar;
       username = user.username;
+        $('#replacement-target').html( $('#history').html() ); 
+  historyClick(0);
     });
     $.mobile.changePage("#map-page");
   },function(error) {
@@ -365,12 +410,23 @@ function loginUser() {
 }
 
 function resetPassword() {
-  var auth = firebase.auth();
   var email = $('#login-txt-email').val();
+  resetPass(email);
+}
 
+function resetPass(email) {
+  var auth = firebase.auth();
   auth.sendPasswordResetEmail(email).then(function() {
     navigator.notification.alert('We sent you an email with instructions on how to reset your password.');
   }, function(error) {
     navigator.notification.alert(error.message);
-  });
-}
+  });}
+
+  function logout () {
+      userId = "";
+      username = "";
+      userEmail = "";
+      avatar = "";
+      $.mobile.changePage("#login");
+          $('#replacement-target').html( $('#history').html() ); 
+  }
