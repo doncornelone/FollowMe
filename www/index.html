@@ -23,9 +23,9 @@
     <div role="main" class="ui-content">
       <h2 class="mc-text-center">Welcome!</h2>
       <p class="mc-top-margin-1-5"><b>Existing Users</b></p>
-      <a href="#login" data-ajax="false" class="ui-btn ui-btn-b ui-corner-all">Sign In</a>
+      <a href="#login" data-ajax="false" class="ui-btn ui-btn-active ui-corner-all">Sign In</a>
       <p class="mc-top-margin-1-5"><b>Don't have an account?</b></p>
-      <a href="#register" data-ajax="false" class="ui-btn ui-btn-b ui-corner-all">Sign Up</a>
+      <a href="#register" data-ajax="false" class="ui-btn ui-btn-active ui-corner-all">Sign Up</a>
       <p></p>
     </div><!-- /content -->
   </div><!-- /page -->
@@ -42,11 +42,7 @@
       <input type="text" name="txt-email" id="login-txt-email">
       <label for="txt-password">Password</label>
       <input type="password" name="txt-password" id="login-txt-password" value="">
-      <fieldset data-role="controlgroup">
-        <input type="checkbox" name="chck-rememberme" id="login-chck-rememberme" checked="">
-        <label for="login-chck-rememberme">Remember me</label>
-      </fieldset>
-      <a data-transition="pop" data-position-to="window" id="btn-submit" class="ui-btn ui-btn-b ui-corner-all mc-top-margin-1-5" onclick="loginUser()">Submit</a>
+      <a data-transition="pop" data-position-to="window" id="btn-submit" class="ui-btn ui-btn-active ui-corner-all mc-top-margin-1-5" onclick="loginUser()">Sign In</a>
       <p class="mc-top-margin-1-5"><a onclick="resetPassword()">Reset my password</a></p>
     </div><!-- /content -->
   </div><!-- /page -->
@@ -78,7 +74,7 @@
         <div class="ui-block-b"><div id="av8" class="ui-bar ui-bar-b" style="text-align: center"><img src="img/av8.png" style="height:80px; width:80px;"onclick="chosenAvatar(8)"></div></div>
         <div class="ui-block-c"><div id="av9" class="ui-bar ui-bar-b" style="text-align: center"><img src="img/av9.png" style="height:80px; width:80px;"onclick="chosenAvatar(9)"></div></div>
       </div>
-      <a id="btn-submit" class="ui-btn ui-btn-b ui-corner-all mc-top-margin-1-5" onclick="registerUser()">Submit</a>
+      <a id="btn-submit" class="ui-btn ui-btn-active ui-corner-all mc-top-margin-1-5" onclick="registerUser()">Sign Up</a>
     </div><!-- /content -->
   </div><!-- /page -->
 
@@ -89,7 +85,7 @@
       <h1>Chat</h1>
     </div>
     <div role="main" class="ui-content">
-      <div id="messages-list" class="ui-grid-a">
+      <div id="messages-list" class="ui-grid-a" style="min-height:800px;">
       </div>
     </div><!-- /content -->
     <div data-role="footer">
@@ -106,19 +102,19 @@
 </div><!-- /page -->
 
 <!-- MAP PAGE-->
-<div data-role="page" id="map-page">
+<div data-role="page" id="main-page">
   <div data-role="panel" id="pushPanel" data-display="push"> 
-    <ul data-role="listview" data-inset="true">
-      <li><a href="#map-page" onclick="onMenuClick('map')" data-rel="close"><img class="ui-li-icon">Map</a></li>
-      <li><a href="#map-page" onclick="onMenuClick('share')" data-rel="close"><img class="ui-li-icon">Share location</a></li>
-      <li><a href="#map-page" onclick="onMenuClick('people')" data-rel="close"><img class="ui-li-icon">People</a></li>
-      <li><a href="#map-page" onclick="onMenuClick('history')" data-rel="close"><img class="ui-li-icon">History</a></li>
-      <li><a href="#map-page" onclick="onMenuClick('settings')" data-rel="close"><img class="ui-li-icon">Settings</a></li>
+    <ul data-role="listview" style="padding-top: 45px">
+      <li><a href="#main-page" onclick="onMenuClick('map')" data-rel="close">Map</a></li>
+      <li><a href="#main-page" onclick="onMenuClick('share')" data-rel="close">Share location</a></li>
+      <li><a href="#main-page" onclick="onMenuClick('people')" data-rel="close">Chat</a></li>
+      <li><a href="#main-page" onclick="onMenuClick('history')" data-rel="close">History</a></li>
+      <li><a href="#main-page" onclick="onMenuClick('settings')" data-rel="close">Profile</a></li>
     </ul>
   </div> 
   <div data-role="header">
-    <a href="#pushPanel" class="ui-btn-left ui-btn ui-btn-inline ui-mini ui-corner-all ui-btn-icon-left ui-icon-bars">Menu</a>
-    <h1>Main Screen</h1>
+  <a href="#pushPanel" data-role="button" data-icon="bars" data-iconpos="notext" data-theme="a" data-iconshadow="true">Bars</a>
+    <h1 id="title-text">Main Screen</h1>
   </div>
   <div role="main" class="ui-content" id="replacement-target">
     <div >
@@ -143,13 +139,13 @@
     <h2>Choose duration</h2>
     <div class="ui-grid-b">
      <div class="ui-block-a">
-      <a class="ui-btn ui-btn-b ui-corner-all mc-top-margin-1-5" onclick="durationClick(5)">5 min</a>
+      <a id="btn-share-5" class="ui-btn ui-btn-active ui-corner-all mc-top-margin-1-5" onclick="durationClick(5)">5 min</a>
     </div>
     <div class="ui-block-b">
-      <a class="ui-btn ui-btn-b ui-corner-all mc-top-margin-1-5" onclick="durationClick(15)">15 min</a>
+      <a id="btn-share-15" class="ui-btn ui-btn-a ui-corner-all mc-top-margin-1-5" onclick="durationClick(15)">15 min</a>
     </div>
     <div class="ui-block-c">
-      <a class="ui-btn ui-btn-b ui-corner-all mc-top-margin-1-5" onclick="durationClick(30)">30 min</a>
+      <a id="btn-share-30" class="ui-btn ui-btn-a ui-corner-all mc-top-margin-1-5" onclick="durationClick(30)">30 min</a>
     </div>
   </div>
   <h2>Choose recipient</h2>
@@ -171,10 +167,10 @@
   <div role="main" class="ui-content" id="history">
     <div class="ui-grid-a">
      <div class="ui-block-a">
-      <a class="ui-btn ui-btn-b ui-corner-all mc-top-margin-1-5" onclick="historyClick(0);">My shares</a>
+      <a id="btn-my-shares" class="ui-btn ui-btn-active ui-corner-all mc-top-margin-1-5" onclick="historyClick(0);">My shares</a>
     </div>
     <div class="ui-block-b">
-      <a class="ui-btn ui-btn-b ui-corner-all mc-top-margin-1-5" onclick="historyClick(1);">Shared to me</a>
+      <a id="btn-shared-to-me" class="ui-btn ui-btn-b ui-corner-all mc-top-margin-1-5" onclick="historyClick(1);">Shared to me</a>
     </div>
     <div id="shares-history">
       
@@ -185,8 +181,11 @@
 <!-- SETTINGS PAGE -->
 <div data-role="page">
   <div role="main" class="ui-content" id="settings">
-    <a class="ui-btn ui-btn-b ui-corner-all mc-top-margin-1-5" onclick="resetPass(userEmail)">Reset password</a>
-    <a class="ui-btn ui-btn-b ui-corner-all mc-top-margin-1-5" onclick="logout()">Logout</a>
+    <p id="profile-username-txt" style="text-align: center;"><b>Szymon.nn</b></p>
+    <img id="profile-user-img" src="img/av1.png" style="height: 120px; width: 120px; display: block; margin: auto;">
+    <p id="profile-email-txt" style="text-align: center;">Szymon.nn</p>
+    <a class="ui-btn ui-btn-active ui-corner-all mc-top-margin-1-5" onclick="resetPass(userEmail)">Reset password</a>
+    <a class="ui-btn ui-btn-active ui-corner-all mc-top-margin-1-5" onclick="logout()">Logout</a>
   </div>
 </div>
 </body>

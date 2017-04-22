@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="UTF-8" ?>
     <widget xmlns   = "http://www.w3.org/ns/widgets"
         xmlns:gap   = "http://phonegap.com/ns/1.0"
-		id          = "pl.carfinder"
+		id          = "pl.followme"
         version     = "1.0.0" >
 
-    <name>CarFinder</name>
-    <description>Aplikacja do znajdowania zagubionego samochodu</description>
-    <author href="asd" email="sz@gmail.com">
-		Szymon Nitecki
+    <name>FollowMe</name>
+    <description>Aplikacja do udostępniania swojej lokalizacji wybranym użytkownikom.</description>
+    <author href="asd" email="szymon.nn@gmail.com">
+		Szymon Nitecki i Roksana Butryn
 	</author>
 	<platform name="android" />
 	

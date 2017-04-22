@@ -11,8 +11,11 @@ body
 }
 #map {
     height: 100%;
-      padding:-16px;
-  margin: 0px;
+
+}
+
+#replacement-target{
+	padding: 0px;
 }
 
 body {
