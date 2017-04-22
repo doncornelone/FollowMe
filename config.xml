@@ -18,6 +18,7 @@
 	<plugin name="cordova-plugin-whitelist"/>
 	<plugin name="cordova-plugin-splashscreen"/>
 	<access origin="*"/>
+	<preference name="SplashScreen" value="splash" />
 	<icon src="icon.png" />
 	<splash src="splash.png" />
 </widget>
