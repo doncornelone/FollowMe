@@ -16,6 +16,7 @@
 	<plugin name="https://github.com/szymonnn/PGGoogleMaps1.3.9.git"/>
 	<plugin name="cordova-plugin-geolocation" spec="1.0.0"/>
 	<plugin name="cordova-plugin-whitelist"/>
+	<plugin name="cordova-plugin-splashscreen"/>
 	<access origin="*"/>
 	<icon src="icon.png" />
 	<splash src="splash.png" />
