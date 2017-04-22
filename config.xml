@@ -18,4 +18,5 @@
 	<plugin name="cordova-plugin-whitelist"/>
 	<access origin="*"/>
 	<icon src="icon.png" />
+	<splash src="splash.png" />
 </widget>
