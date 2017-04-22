@@ -10,6 +10,8 @@
 		Szymon Nitecki i Roksana Butryn
 	</author>
 	<platform name="android" />
+		<icon src="icon.png" />
+	<splash src="splash.png" />
 	
 	<plugin name="cordova-plugin-device" spec="~1.1.4" />
 	<plugin name="cordova-plugin-dialogs" spec="~1.3.1" />
@@ -18,7 +20,4 @@
 	<plugin name="cordova-plugin-whitelist"/>
 	<plugin name="cordova-plugin-splashscreen"/>
 	<access origin="*"/>
-	<preference name="SplashScreen" value="splash" />
-	<icon src="icon.png" />
-	<splash src="splash.png" />
 </widget>
