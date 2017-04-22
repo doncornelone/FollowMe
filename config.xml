@@ -4,7 +4,7 @@
 		id          = "pl.followme"
         version     = "1.0.0" >
 
-    <name>FollowMe</name>
+    <name>Follow Me</name>
     <description>Aplikacja do udostępniania swojej lokalizacji wybranym użytkownikom.</description>
     <author href="asd" email="szymon.nn@gmail.com">
 		Szymon Nitecki i Roksana Butryn
