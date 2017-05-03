@@ -3,5 +3,5 @@
 ### Opis aplikacji ###
 ### Autorzy ###
 
-*Szymon Nitecki - Team Manager 
-*Roksana Butryn
+* Szymon Nitecki - Team Manager 
+* Roksana Butryn
