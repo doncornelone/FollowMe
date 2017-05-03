@@ -215,7 +215,9 @@ function initHistory(){
   firebase.database().ref('location-shares').once('value').then(function(snap) {
     hideLoader();
     console.log(snap.val())
+    var count = 0;
     snap.forEach(function (snapshot){
+      count++;
       var authorId = snapshot.child("authorId").val();
       var recipientId = snapshot.child("recipientId").val();
       var expirationTime = snapshot.child("expirationTime").val();
@@ -243,7 +245,7 @@ function initHistory(){
         }
       });
     });
-    if ($("#shares-history").html() == ""){
+    if (count == 0){
       $("#shares-history").html("<p style=\"margin-top:45px; text-align:center;\">The list is empty. Choose 'Share location' in menu to begin.</p>")
     }
   });
@@ -297,7 +299,7 @@ $(document).on("pageshow","#chat-page",function(){
       } else if (recipientId == userId && authorId == chosenMessageUser){
         otherUserMessage = '<div class="ui-body ui-body-a ui-corner-all">'+ s.child("content").val() +'</div>';
       }
-      if (currentUserMessage != "" && otherUserMessage != ""){
+      if (currentUserMessage != "" || otherUserMessage != ""){
       $("#messages-list").append('<div class="ui-block-a">' +
         otherUserMessage +
         '</div>'+
