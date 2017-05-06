@@ -33,7 +33,7 @@ var map;
 var currentPositionMarker;
 var sharedLocationMarkerArray = [];
 function initMap() {
-  var latlng = new google.maps.LatLng(50, 20);
+  var latlng = new google.maps.LatLng(50.068317,19.9518585);
   map = new google.maps.Map(document.getElementById('map'), {
     zoom: 10,
     center:latlng,
@@ -43,23 +43,35 @@ function initMap() {
 
 function initMapPage() {
   var firstLocation = true;
-  var watchID = navigator.geolocation.watchPosition(onSuccess, onError, { timeout: 30000 });
-    showLoader("Waiting for location...")
+      var watchID = navigator.geolocation.watchPosition(onSuccess, onError, { timeout: 30000 });
+      showLoader("Waiting for location...")    
   firebase.database().ref('location-shares').once('value').then(function(snapshot) {
-    var locationShares = snapshot.val();
+    // for (var i = 0; i < sharedLocationMarkerArray.length; i++){
+    //   var shared = sharedLocationMarkerArray[i];
+    //   shared.marker.setMap(null);
+    // }
     snapshot.forEach(function (snapshot){
       if (snapshot.child("recipientId").val() == userId){
         var marker = new google.maps.Marker({
           map: map
         });
-
-        var infowindow = new google.maps.InfoWindow({
-          content: snapshot.child("authorId").val()
-        });
-        marker.addListener('click', function() {
-          infowindow.open(map, marker);
-        });
         firebase.database().ref('users/' + snapshot.child("authorId").val()).once('value').then(function(sna) {
+          console.log(sna.val());
+          var currentPosition = sna.val().currentPosition;
+          var infowindow = new google.maps.InfoWindow({
+            content: snapshot.child("authorId").val()
+          });
+          var expDate = new Date();
+          expDate.setTime(snapshot.child("expirationTime").val());
+          var currentTime = new Date().getTime();
+          infowindow.setContent(getUserInfoWindowContent(sna.val().avatar, sna.val().username, "expires at " + expDate.format('HH:MM')));
+          if (currentPosition != null && (sna.val().expirationTime - currentTime > 0)){
+            marker.setPosition(new google.maps.LatLng(currentPosition.latitude,currentPosition.longitude));
+            infowindow.open(map, marker);
+          }
+          marker.addListener('click', function() {
+            infowindow.open(map, marker);
+          });
           sharedLocationMarkerArray.push({
             marker: marker,
             infowindow: infowindow,
@@ -83,9 +95,10 @@ function initMapPage() {
                 shared.marker.setVisible(true);
                 var expDate = new Date();
                 expDate.setTime(shared.expirationTime);
-                shared.infowindow.setContent(getUserInfoWindowContent(shared.author.avatar, shared.author.username, "expires at " + expDate.format('HH:MM')));
-                shared.infowindow.open(map, shared.marker);
-                shared.marker.setPosition(new google.maps.LatLng(latitude,longitude));
+                if (isNumber(latitude) && isNumber(longitude)){
+                  var latlng = new google.maps.LatLng(latitude,longitude);
+                  shared.marker.setPosition(latlng);
+                }
                 shared.infowindow.open(map, shared.marker);
               } else {
                 shared.marker.setVisible(false);
@@ -98,8 +111,11 @@ function initMapPage() {
     });
   });
 
+  function isNumber(obj) { return !isNaN(parseFloat(obj)) }
+
   function onSuccess(position) {
     hideLoader();
+    if (position == null) {return;}
     var location = new google.maps.LatLng(position.coords.latitude, position.coords.longitude);
     if (firstLocation){
       firstLocation = false;
@@ -119,11 +135,11 @@ function initMapPage() {
       infowindow.open(map, currentPositionMarker);
     } else {
       currentPositionMarker.setPosition({lat: position.coords.latitude, lng: position.coords.longitude});
-      var database = firebase.database();
-      firebase.database().ref('users/' + userId).update({
-        currentPosition: position.coords,
-      });
     }
+    var database = firebase.database();
+    firebase.database().ref('users/' + userId).update({
+      currentPosition: position.coords,
+    });
   }
 
   function onError(error) {
@@ -211,13 +227,11 @@ function historyClick(argument) {
 
 function initHistory(){
   $('#title-text').html("History");
-    showLoader("Fetching data...");
+  showLoader("Fetching data...");
   firebase.database().ref('location-shares').once('value').then(function(snap) {
     hideLoader();
     console.log(snap.val())
-    var count = 0;
     snap.forEach(function (snapshot){
-      count++;
       var authorId = snapshot.child("authorId").val();
       var recipientId = snapshot.child("recipientId").val();
       var expirationTime = snapshot.child("expirationTime").val();
@@ -230,24 +244,27 @@ function initHistory(){
       } else {
         id = authorId;
       }
+      var htmlToAdd = "";
       firebase.database().ref('users/' + id).once('value').then(function(s){
         var name = s.child("username").val();
         var avat = s.child("avatar").val();
         var htm = "<a class=\"ui-btn ui-btn-b ui-corner-all mc-top-margin-1-5\"><table><tr><td valign=\"center\"><img src=\"" + avat + "\" style=\"height:40px; width:40px;\"></td><td valign=\"center\">" + name + "<br><b style=\"color:#aaaaaa; font-size:12px\"> expiration time:" + expirationString + "</b></td></tr></table></a>";
         if (historyType == 0){
           if (authorId == userId){
-            $("#shares-history").append(htm);
+            htmlToAdd = htmlToAdd + htm;
           }
         } else if (historyType == 1){
-          if (authorId != userId){
-            $("#shares-history").append(htm);
+          console.log("shared to me ")
+          if (recipientId == userId){
+            htmlToAdd = htmlToAdd + htm;
           }
         }
+        if (htmlToAdd){
+          $("#shares-history").append(htm);
+        }
+        
       });
     });
-    if (count == 0){
-      $("#shares-history").html("<p style=\"margin-top:45px; text-align:center;\">The list is empty. Choose 'Share location' in menu to begin.</p>")
-    }
   });
 }
 
@@ -281,6 +298,8 @@ $(document).on('click', "#startChat" , function(argument) {
 
 //CHAT PAGE
 $(document).on("pageshow","#chat-page",function(){
+  $("#messages-list").height($.mobile.getScreenHeight() - 2*$("#chat-footer").height() + 13)
+  console.log("here");
   showLoader("Fetching data...");
   var starCountRef = firebase.database().ref('messages');
   starCountRef.orderByChild("time");
@@ -300,14 +319,14 @@ $(document).on("pageshow","#chat-page",function(){
         otherUserMessage = '<div class="ui-body ui-body-a ui-corner-all">'+ s.child("content").val() +'</div>';
       }
       if (currentUserMessage != "" || otherUserMessage != ""){
-      $("#messages-list").append('<div class="ui-block-a">' +
-        otherUserMessage +
-        '</div>'+
-        '<div class="ui-block-b">'+
-        currentUserMessage +
-        '</div>')
-      window.scrollTo(0,document.body.scrollHeight);
-    }
+        $("#messages-list").append('<div class="ui-block-a">' +
+          otherUserMessage +
+          '</div>'+
+          '<div class="ui-block-b">'+
+          currentUserMessage +
+          '</div>')
+        document.getElementById("messages-list").scrollTop = document.getElementById("messages-list").scrollHeight;
+      }
     })
     console.log($("#messages-list").html());
     if ($("#messages-list").html() == ""){
@@ -319,7 +338,8 @@ $(document).on("pageshow","#chat-page",function(){
 function sendMessage(){
   var date = new Date();
   var message = $('#txt-message').val();
-  $('#txt-message').val("");
+  if (!message) {return}
+    $('#txt-message').val("");
   console.log(message);
   var newShareKey = firebase.database().ref().child('messages').push().key;
   firebase.database().ref('messages/' + newShareKey).set({
@@ -346,7 +366,7 @@ $( document ).on( "mobileinit", function() {
 
  function initShare() {
   var database = firebase.database();
-      showLoader("Fetching data...");
+  showLoader("Fetching data...");
   firebase.database().ref('users').once('value').then(function(snapshot) {
     hideLoader();
     console.log(snapshot.val());
@@ -364,26 +384,26 @@ $( document ).on( "mobileinit", function() {
 }
 
 function durationClick(duration) {
-    $("#btn-share-5").addClass("ui-btn-a");
-    $("#btn-share-15").addClass("ui-btn-a");
-    $("#btn-share-30").addClass("ui-btn-a");
-    $("#btn-share-5").removeClass("ui-btn-active");
-    $("#btn-share-15").removeClass("ui-btn-active");
-    $("#btn-share-30").removeClass("ui-btn-active");
-    switch (duration){
-      case 5:
-      $("#btn-share-5").removeClass("ui-btn-a");
-      $("#btn-share-5").addClass("ui-btn-active");
-      break;
-      case 15:
-      $("#btn-share-15").removeClass("ui-btn-a");
-      $("#btn-share-15").addClass("ui-btn-active");
-      break;
-      case 30:    
-      $("#btn-share-30").removeClass("ui-btn-a");
-      $("#btn-share-30").addClass("ui-btn-active");
-      break;
-    }
+  $("#btn-share-5").addClass("ui-btn-a");
+  $("#btn-share-15").addClass("ui-btn-a");
+  $("#btn-share-30").addClass("ui-btn-a");
+  $("#btn-share-5").removeClass("ui-btn-active");
+  $("#btn-share-15").removeClass("ui-btn-active");
+  $("#btn-share-30").removeClass("ui-btn-active");
+  switch (duration){
+    case 5:
+    $("#btn-share-5").removeClass("ui-btn-a");
+    $("#btn-share-5").addClass("ui-btn-active");
+    break;
+    case 15:
+    $("#btn-share-15").removeClass("ui-btn-a");
+    $("#btn-share-15").addClass("ui-btn-active");
+    break;
+    case 30:    
+    $("#btn-share-30").removeClass("ui-btn-a");
+    $("#btn-share-30").addClass("ui-btn-active");
+    break;
+  }
 
   locationShareDuration = duration;
 }
@@ -401,6 +421,7 @@ $(document).on('click', "#locationShareButton" , function(argument) {
   });
   navigator.notification.alert('You successfully share location!', function (){
     $('#replacement-target').html( $('#history').html() ); 
+    historyClick(0);
   });
 });
 
@@ -419,7 +440,7 @@ function registerUser() {
   if (password != passwordConfirm){
     navigator.notification.alert('Given passwords are different!');
   } else {
-        showLoader("Registering...");
+    showLoader("Registering...");
     firebase.auth().createUserWithEmailAndPassword(email, password).then(function(user){
       userId = user.uid;
       hideLoader();
@@ -458,8 +479,8 @@ function loginUser() {
   var email = $('#login-txt-email').val();
   var password = $('#login-txt-password').val();
   firebase.auth().signInWithEmailAndPassword(email, password).then(function(user){
-      $('#login-txt-email').val("")
-  $('#login-txt-password').val("")
+    $('#login-txt-email').val("")
+    $('#login-txt-password').val("")
     userEmail = email;
     userId = user.uid;
     var database = firebase.database();
@@ -470,9 +491,9 @@ function loginUser() {
       $("#profile-username-txt").html("<b>" + username + "</b>");
       $("#profile-email-txt").html(userEmail);
       $("#profile-user-img").attr("src", avatar);
-        $('#replacement-target').html( $('#history').html() ); 
-        hideLoader();
-  historyClick(0);
+      $('#replacement-target').html( $('#history').html() ); 
+      hideLoader();
+      historyClick(0);
     });
     $.mobile.changePage("#main-page");
   },function(error) {
@@ -489,7 +510,7 @@ function resetPassword() {
 }
 
 function resetPass(email) {
-    showLoader("Resetting password...")
+  showLoader("Resetting password...")
   var auth = firebase.auth();
   auth.sendPasswordResetEmail(email).then(function() {
     hideLoader();
@@ -500,10 +521,10 @@ function resetPass(email) {
   });}
 
   function logout () {
-      userId = "";
-      username = "";
-      userEmail = "";
-      avatar = "";
-      $.mobile.changePage("#login");
-          $('#replacement-target').html( $('#history').html() ); 
+    userId = "";
+    username = "";
+    userEmail = "";
+    avatar = "";
+    $.mobile.changePage("#login");
+    $('#replacement-target').html( $('#history').html() ); 
   }

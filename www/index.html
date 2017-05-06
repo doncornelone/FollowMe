@@ -84,11 +84,11 @@
     <div data-role="header">
       <h1>Chat</h1>
     </div>
-    <div role="main" class="ui-content">
-      <div id="messages-list" class="ui-grid-a" style="min-height:450px;">
+    <div role="main" class="ui-content" style="padding: 0px">
+      <div id="messages-list" class="ui-grid-a" style="position:relative; overflow:scroll;">
       </div>
     </div><!-- /content -->
-    <div data-role="footer">
+    <div data-role="footer" id="chat-footer">
       <table style="width: 100%"><tr>
         <td valign="center">
           <input type="text" name="txt-message" id="txt-message" value="">
@@ -173,7 +173,6 @@
       <a id="btn-shared-to-me" class="ui-btn ui-btn-b ui-corner-all mc-top-margin-1-5" onclick="historyClick(1);">Shared to me</a>
     </div>
     <div id="shares-history">
-      
     </div>
   </div>
 </div>
