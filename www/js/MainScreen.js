@@ -481,6 +481,7 @@ function registerUser() {
       });
     },function(error) {
     // Handle Errors here.
+    hideLoader();
     var errorCode = error.code;
     var errorMessage = error.message;
     navigator.notification.alert(errorMessage);
