@@ -104,8 +104,7 @@ function initMapPage() {
                   console.log("set new position")
                   try{
                   var latlng = new google.maps.LatLng(latitude,longitude);
-                  console.log(latitude + " " + longitude);
-                  shared.marker.setPosition(latlng);
+                  shared.marker.setPosition({lat:latitude, lng:longitude}});
 
                 } catch(err){
                   console.log(err);
