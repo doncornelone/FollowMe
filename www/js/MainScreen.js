@@ -43,6 +43,8 @@ function initMap() {
 }
 
 function initMapPage() {
+  sharedLocationMarkerArray = [];
+  currentPositionMarker = null;
   var firstLocation = true;
       var watchID = navigator.geolocation.watchPosition(onSuccess, onError, { timeout: 30000 });
       showLoader("Waiting for location...")    
