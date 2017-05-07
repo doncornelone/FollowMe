@@ -46,10 +46,6 @@ function initMapPage() {
       var watchID = navigator.geolocation.watchPosition(onSuccess, onError, { timeout: 30000 });
       showLoader("Waiting for location...")    
   firebase.database().ref('location-shares').once('value').then(function(snapshot) {
-    // for (var i = 0; i < sharedLocationMarkerArray.length; i++){
-    //   var shared = sharedLocationMarkerArray[i];
-    //   shared.marker.setMap(null);
-    // }
     snapshot.forEach(function (snapshot){
       if (snapshot.child("recipientId").val() == userId){
         var marker = new google.maps.Marker({
