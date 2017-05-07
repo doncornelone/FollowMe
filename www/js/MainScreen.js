@@ -524,6 +524,7 @@ function loginUser() {
     $.mobile.changePage("#main-page");
   },function(error) {
     // Handle Errors here.
+    hideLoader();
     var errorCode = error.code;
     var errorMessage = error.message;
     navigator.notification.alert(errorMessage);
