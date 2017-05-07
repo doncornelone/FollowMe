@@ -46,13 +46,16 @@ function initMapPage() {
       var watchID = navigator.geolocation.watchPosition(onSuccess, onError, { timeout: 30000 });
       showLoader("Waiting for location...")    
   firebase.database().ref('location-shares').once('value').then(function(snapshot) {
+    console.log("location shares downloaded");
     snapshot.forEach(function (snapshot){
       if (snapshot.child("recipientId").val() == userId){
+        console.log("recipientId = userId");
         var marker = new google.maps.Marker({
           map: map
         });
+        console.log("marker created");
         firebase.database().ref('users/' + snapshot.child("authorId").val()).once('value').then(function(sna) {
-          console.log(sna.val());
+          console.log("get first user data")
           var currentPosition = sna.val().currentPosition;
           var infowindow = new google.maps.InfoWindow({
             content: snapshot.child("authorId").val()
@@ -61,13 +64,18 @@ function initMapPage() {
           expDate.setTime(snapshot.child("expirationTime").val());
           var currentTime = new Date().getTime();
           infowindow.setContent(getUserInfoWindowContent(sna.val().avatar, sna.val().username, "expires at " + expDate.format('HH:MM')));
+          console.log("cnfigure info window")
           if (currentPosition != null && (sna.val().expirationTime - currentTime > 0)){
+            console.log("position not null and time valid");
             marker.setPosition(new google.maps.LatLng(currentPosition.latitude,currentPosition.longitude));
             infowindow.open(map, marker);
+          } else {
+            console.log("position is null or time invalid");
           }
           marker.addListener('click', function() {
             infowindow.open(map, marker);
           });
+          console.log("added listener")
           sharedLocationMarkerArray.push({
             marker: marker,
             infowindow: infowindow,
@@ -75,41 +83,59 @@ function initMapPage() {
             author : sna.val(),
             expirationTime : snapshot.child("expirationTime").val()
           });
-        });
-      }
+          console.log("added to array")
 
-      var starCountRef = firebase.database().ref('users/' + snapshot.child("authorId").val() + '/currentPosition');
+                var starCountRef = firebase.database().ref('users/' + snapshot.child("authorId").val() + '/currentPosition');
       starCountRef.on('value', function(snap) {
         if (snap.val() != null){
+          console.log("position not null")
           var latitude = snap.val().latitude;
           var longitude = snap.val().longitude;
           for (var i = 0; i < sharedLocationMarkerArray.length; i++){
             var shared = sharedLocationMarkerArray[i];
             var currentTime = new Date().getTime();
             if (shared.authorId == snapshot.child("authorId").val()){
+              console.log("author from array matches autor from snapshot")
               if (shared.expirationTime - currentTime > 0){
                 shared.marker.setVisible(true);
                 var expDate = new Date();
                 expDate.setTime(shared.expirationTime);
                 if (isNumber(latitude) && isNumber(longitude)){
+                  console.log("set new position")
+                  try{
                   var latlng = new google.maps.LatLng(latitude,longitude);
+                  console.log(latlng);
                   shared.marker.setPosition(latlng);
+
+                } catch(err){
+                  console.log(err);
+                }
                 }
                 shared.infowindow.open(map, shared.marker);
               } else {
+                console.log("hide marker")
                 shared.marker.setVisible(false);
                 shared.infowindow.close();
+              } 
+            } else {
+                console.log("author from array doesnt matches autor from snapshot")
               }
-            }
           }          
+        } else {
+          console.log("position is null")
         }
       });
+        });
+      } else {
+       console.log("recipientId != userId");
+      }
     });
   });
 
   function isNumber(obj) { return !isNaN(parseFloat(obj)) }
 
   function onSuccess(position) {
+    console.log("success" + position.coords.latitude)
     hideLoader();
     if (position == null) {return;}
     var location = new google.maps.LatLng(position.coords.latitude, position.coords.longitude);
@@ -132,9 +158,10 @@ function initMapPage() {
     } else {
       currentPositionMarker.setPosition({lat: position.coords.latitude, lng: position.coords.longitude});
     }
+    var currentPosition = {latitude:position.coords.latitude, longitude:position.coords.longitude};
     var database = firebase.database();
     firebase.database().ref('users/' + userId).update({
-      currentPosition: position.coords,
+      currentPosition: currentPosition,
     });
   }
 
