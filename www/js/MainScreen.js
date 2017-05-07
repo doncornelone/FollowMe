@@ -102,13 +102,8 @@ function initMapPage() {
                 expDate.setTime(shared.expirationTime);
                 if (isNumber(latitude) && isNumber(longitude)){
                   console.log("set new position")
-                  try{
-                  var latlng = new google.maps.LatLng(latitude,longitude);
+                  console.log(latitude + " " + longitude);
                   shared.marker.setPosition({lat:latitude, lng:longitude});
-
-                } catch(err){
-                  console.log(err);
-                }
                 }
                 shared.infowindow.open(map, shared.marker);
               } else {
