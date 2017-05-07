@@ -32,6 +32,7 @@ function hideLoader() {
 var map;
 var currentPositionMarker;
 var sharedLocationMarkerArray = [];
+var locationUpdateRef;
 function initMap() {
   var latlng = new google.maps.LatLng(50.068317,19.9518585);
   map = new google.maps.Map(document.getElementById('map'), {
@@ -85,8 +86,8 @@ function initMapPage() {
           });
           console.log("added to array")
 
-                var starCountRef = firebase.database().ref('users/' + snapshot.child("authorId").val() + '/currentPosition');
-      starCountRef.on('value', function(snap) {
+      locationUpdateRef = firebase.database().ref('users/' + snapshot.child("authorId").val() + '/currentPosition');
+      locationUpdateRef.on('value', function(snap) {
         if (snap.val() != null){
           console.log("position not null")
           var latitude = snap.val().latitude;
@@ -192,6 +193,7 @@ function initMapPage() {
 
 function onMenuClick(name) {
   console.log(name);
+  stopUpdates();
   switch(name){
     case 'map':
     $('#replacement-target').html( $('#map-content').html() ); 
@@ -219,6 +221,12 @@ function onMenuClick(name) {
     break;
   }
 }
+
+  function stopUpdates() {
+    try{
+      locationUpdateRef.off();
+    } catch (err){}
+  }
 
 // HISTORY
 var historyType = 0
